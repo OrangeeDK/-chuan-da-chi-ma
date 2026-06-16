@@ -98,7 +98,7 @@
     font-family: 'BiaoXiaoZhiWuJieHei', sans-serif;
   }
   .nav-sub {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -139,7 +139,7 @@
     font-family: 'AlibabaPuHuiTi-Heavy', sans-serif;
   }
   .size-sub {
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 400;
     color: #666666;
     text-transform: uppercase;
@@ -163,7 +163,7 @@
     color: var(--accent);
   }
   .track-sub {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 400;
     color: var(--text-dim);
     margin-top: var(--space-xs);
@@ -177,7 +177,7 @@
     margin-top: var(--space-sm);
   }
   .badge {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -214,11 +214,11 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .measure-icon svg { width: 14px; height: 14px; }
+  .measure-icon svg { width: 18px; height: 18px; }
 
   .measure-info { flex: 1; min-width: 0; }
   .measure-name {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-dim);
     text-transform: uppercase;
@@ -227,7 +227,7 @@
     font-family: 'AlibabaPuHuiTi-Heavy', sans-serif;
   }
   .measure-detail {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 400;
     color: var(--text-hint);
     margin-top: 2px;
@@ -250,6 +250,7 @@
     margin-left: 2px;
     letter-spacing: 0.06em;
   }
+  .pants-fit, .pants-drag { font-size: 20px; font-weight: 200; }
 
   /* ================================================================
      CONTROLS
@@ -261,13 +262,13 @@
   .controls + .controls { border-top: none; }
 
   .ctrl-label {
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
     color: #555;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     margin-bottom: var(--space-xs);
-  
+
     font-family: 'AlibabaPuHuiTi-Heavy', sans-serif;
   }
 
@@ -285,7 +286,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-dim);
     border-radius: var(--radius-sm);
@@ -308,7 +309,7 @@
     border: none;
     background: var(--bg2);
     cursor: pointer;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-dim);
     border-radius: var(--radius-pill);
@@ -330,10 +331,10 @@
   }
   .field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .field label {
-    font-size: 9px; font-weight: 600;
+    font-size: 11px; font-weight: 600;
     color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 0.18em;
-  
+
     font-family: 'AlibabaPuHuiTi-Heavy', sans-serif;
   }
   .field-box {
@@ -351,7 +352,7 @@
     width: 100%; min-width: 0; text-align: right;
   }
   .field-box .unit {
-    padding: 0 10px 0 0; font-size: 10px; color: var(--text-dim);
+    padding: 0 10px 0 0; font-size: 11px; color: var(--text-dim);
     font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em;
   }
 
@@ -411,7 +412,7 @@
   /* Custom panel */
   .custom-panel { display: none; padding: var(--space-md) var(--space-lg); }
   .custom-hint {
-    font-size: 11px; color: var(--text-dim);
+    font-size: 13px; color: var(--text-dim);
     margin-bottom: var(--space-sm); line-height: 1.5;
   }
   .custom-input-row {
@@ -419,7 +420,7 @@
   }
   .custom-field { flex: 1; display: flex; flex-direction: column; gap: 4px; }
   .custom-field label {
-    font-size: 9px; font-weight: 600;
+    font-size: 11px; font-weight: 600;
     color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 0.18em;
   }
@@ -455,10 +456,13 @@
   @media (max-width: 480px) {
     .player { padding: var(--space-xl) var(--space-md); gap: var(--space-lg); }
     .size-circle { width: 88px; height: 88px; }
+    .size-circle .size-inner { width: 88px; height: 88px; }
     .size-char { font-size: 26px; }
+    #sizeChar { font-size: 26px !important; }
     .track-title { font-size: 26px; }
     .measure-row { padding: 13px var(--space-md); }
     .measure-value { font-size: 17px; }
+    .pants-fit, .pants-drag { font-size: 17px; }
     .controls { padding: var(--space-lg) var(--space-md); }
     .switch-row { padding: var(--space-md); }
     .custom-panel { padding: var(--space-md); }
@@ -472,28 +476,30 @@
 
   <!-- NAV -->
   <div class="nav">
-    <div class="nav-logo" style="transform:rotate(15deg);">
-      <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;overflow:visible;">
-        <ellipse cx="200" cy="370" rx="110" ry="12" fill="rgba(0,0,0,0.08)"/>
-        <ellipse cx="200" cy="230" rx="110" ry="100" fill="#ffa726" stroke="#d47300" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="200" cy="228" rx="82" ry="72" fill="#ffb74d" opacity="0.45"/>
-        <circle cx="160" cy="185" r="2.5" fill="#e65100" opacity="0.3"/>
-        <circle cx="240" cy="190" r="2" fill="#e65100" opacity="0.25"/>
-        <circle cx="185" cy="215" r="2.5" fill="#e65100" opacity="0.25"/>
-        <circle cx="230" cy="220" r="2" fill="#e65100" opacity="0.2"/>
-        <circle cx="145" cy="250" r="2" fill="#e65100" opacity="0.25"/>
-        <circle cx="260" cy="255" r="2" fill="#e65100" opacity="0.2"/>
-        <circle cx="175" cy="285" r="2.5" fill="#e65100" opacity="0.2"/>
-        <circle cx="240" cy="275" r="2" fill="#e65100" opacity="0.2"/>
-        <circle cx="210" cy="180" r="3" fill="#e65100" opacity="0.2"/>
-        <circle cx="200" cy="260" r="2" fill="#e65100" opacity="0.2"/>
-        <ellipse cx="200" cy="325" rx="8" ry="5" fill="#e65100" opacity="0.5" stroke="#d47300" stroke-width="2"/>
-        <path d="M200 130 Q200 115 199 102" stroke="#5d4037" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <ellipse cx="208" cy="88" rx="22" ry="8" fill="#66bb6a" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" transform="rotate(25 208 88)"/>
-        <path d="M199 82 Q210 84 221 91" stroke="#2e7d32" stroke-width="1.5" fill="none" opacity="0.6"/>
-      </svg>
+    <div style="position:relative;width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+      <div class="nav-logo" style="position:absolute;top:-6px;left:-14px;transform:rotate(15deg);">
+        <svg viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;overflow:visible;">
+          <ellipse cx="200" cy="370" rx="110" ry="12" fill="rgba(0,0,0,0.08)"/>
+          <ellipse cx="200" cy="230" rx="110" ry="100" fill="#ffa726" stroke="#d47300" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="200" cy="228" rx="82" ry="72" fill="#ffb74d" opacity="0.45"/>
+          <circle cx="160" cy="185" r="2.5" fill="#e65100" opacity="0.3"/>
+          <circle cx="240" cy="190" r="2" fill="#e65100" opacity="0.25"/>
+          <circle cx="185" cy="215" r="2.5" fill="#e65100" opacity="0.25"/>
+          <circle cx="230" cy="220" r="2" fill="#e65100" opacity="0.2"/>
+          <circle cx="145" cy="250" r="2" fill="#e65100" opacity="0.25"/>
+          <circle cx="260" cy="255" r="2" fill="#e65100" opacity="0.2"/>
+          <circle cx="175" cy="285" r="2.5" fill="#e65100" opacity="0.2"/>
+          <circle cx="240" cy="275" r="2" fill="#e65100" opacity="0.2"/>
+          <circle cx="210" cy="180" r="3" fill="#e65100" opacity="0.2"/>
+          <circle cx="200" cy="260" r="2" fill="#e65100" opacity="0.2"/>
+          <ellipse cx="200" cy="325" rx="8" ry="5" fill="#e65100" opacity="0.5" stroke="#d47300" stroke-width="2"/>
+          <path d="M200 130 Q200 115 199 102" stroke="#5d4037" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="208" cy="88" rx="22" ry="8" fill="#66bb6a" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" transform="rotate(25 208 88)"/>
+          <path d="M199 82 Q210 84 221 91" stroke="#2e7d32" stroke-width="1.5" fill="none" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="nav-title" style="position:relative;z-index:2;font-size:18px;">大孔</div>
     </div>
-    <div class="nav-title">大孔</div>
     <div class="nav-sub">穿搭尺码<br><span style="font-size:8px;">仅供参考</span></div>
   </div>
 
@@ -501,9 +507,9 @@
   <div class="player">
     <div class="size-circle">
       <div style="position:absolute;inset:0;border-radius:50%;border:5px solid #FF9500;background:#EBEBEB;"></div>
-      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:104px;height:104px;">
+      <div class="size-inner" style="position:relative;z-index:1;width:100%;height:100%;">
         <div id="sizeChar" style="font-size:32px;font-weight:200;color:#1A1A1A;letter-spacing:-0.5px;line-height:1;">M</div>
-        <div style="font-size:9px;font-weight:400;color:#888888;text-transform:uppercase;letter-spacing:0.15em;margin-top:4px;">参考尺码</div>
+        <div style="font-size:10px;font-weight:400;color:#888888;text-transform:uppercase;letter-spacing:0.15em;margin-top:4px;">参考尺码</div>
       </div>
     </div>
     <div class="track-info">
@@ -557,7 +563,7 @@
       </div>
       <div class="measure-info">
         <div class="measure-name">裤长</div>
-        <div class="measure-detail">休闲裤 · 西裤</div>
+        <div class="measure-detail" id="pantsDetail">合身</div>
       </div>
       <div class="measure-value" id="mv-pants">102<span class="unit">cm</span></div>
     </div>
@@ -709,7 +715,13 @@
           <span class="unit">cm</span>
         </div>
       </div>
-      <div class="custom-field" style="visibility:hidden;"></div>
+      <div class="custom-field">
+        <label>腰围</label>
+        <div class="custom-input">
+          <input type="number" id="cf-waist" placeholder="—" step="0.1" oninput="render()">
+          <span class="unit">cm</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -730,39 +742,54 @@ let customMode = false;
 /* ── Formula table (H×a+b, from reference image) ── */
 const TBL = {
   male: {
-    thin:   { outer:{a:0.37,b:-0.5,c:0.5}, inner:{a:0.39,b:-1.0,c:0.5}, pants:{a:0.58,b:-1.0,c:0.3}, shoulder:{a:0.23,b:0,c:0.6}, chest:{a:0.50,b:0,c:0.2} },
-    normal: { outer:{a:0.40,b:-1.0,c:0.6}, inner:{a:0.38,b:-1.0,c:0.6}, pants:{a:0.60,b:0,c:0.4},  shoulder:{a:0.25,b:0,c:0.8}, chest:{a:0.54,b:0,c:0.2} },
-    heavy:  { outer:{a:0.42,b:0,c:0.7},   inner:{a:0.40,b:0,c:0.7},   pants:{a:0.62,b:0,c:0.5},  shoulder:{a:0.27,b:0,c:0.9}, chest:{a:0.58,b:0,c:0.2} },
-    obese:  { outer:{a:0.43,b:+1.0,c:0.8}, inner:{a:0.41,b:0,c:0.8},   pants:{a:0.64,b:0,c:0.6},  shoulder:{a:0.28,b:0,c:1.0}, chest:{a:0.60,b:0,c:0.2} },
+    thin:   { outer:{a:0.38,b:0,c:0.3}, inner:{a:0.37,b:0,c:0.3}, pants:{a:0.54,b:6,c:0.3}, shoulder:{a:0.24,b:0,c:0.3}, chest:{a:0.52,b:0,c:0.3}, waist:{a:0.41,b:5,c:1.0} },
+    normal: { outer:{a:0.39,b:0,c:0.3}, inner:{a:0.38,b:0,c:0.3}, pants:{a:0.55,b:6,c:0.3}, shoulder:{a:0.25,b:0,c:0.3}, chest:{a:0.54,b:0,c:0.3}, waist:{a:0.43,b:5,c:1.0} },
+    heavy:  { outer:{a:0.40,b:0,c:0.3}, inner:{a:0.39,b:0,c:0.3}, pants:{a:0.56,b:6,c:0.3}, shoulder:{a:0.26,b:0,c:0.3}, chest:{a:0.56,b:0,c:0.3}, waist:{a:0.45,b:5,c:1.0} },
+    obese:  { outer:{a:0.41,b:0,c:0.3}, inner:{a:0.40,b:0,c:0.3}, pants:{a:0.57,b:6,c:0.3}, shoulder:{a:0.27,b:0,c:0.3}, chest:{a:0.58,b:0,c:0.3}, waist:{a:0.47,b:5,c:1.0} },
   },
   female: {
-    thin:   { outer:{a:0.35,b:-1.5,c:0.7}, inner:{a:0.36,b:-2.0,c:0.7}, pants:{a:0.57,b:-1.0,c:0.4}, shoulder:{a:0.21,b:0,c:0.5}, chest:{a:0.46,b:0,c:0.2} },
-    normal: { outer:{a:0.37,b:-1.5,c:0.8}, inner:{a:0.35,b:-1.5,c:0.8}, pants:{a:0.59,b:-1,c:0.5},  shoulder:{a:0.23,b:0,c:0.6}, chest:{a:0.50,b:0,c:0.2} },
-    heavy:  { outer:{a:0.39,b:-0.5,c:0.9}, inner:{a:0.37,b:-0.5,c:0.9}, pants:{a:0.61,b:-1,c:0.6},  shoulder:{a:0.25,b:0,c:0.7}, chest:{a:0.54,b:0,c:0.2} },
-    obese:  { outer:{a:0.40,b:+0.5,c:1.0}, inner:{a:0.38,b:0,c:1.0},   pants:{a:0.63,b:-1,c:0.7},  shoulder:{a:0.26,b:0,c:0.8}, chest:{a:0.58,b:0,c:0.2} },
+    thin:   { outer:{a:0.36,b:0,c:0.3}, inner:{a:0.35,b:0,c:0.3}, pants:{a:0.58,b:4,c:0.3}, shoulder:{a:0.22,b:0,c:0.3}, chest:{a:0.48,b:0,c:0.3}, waist:{a:0.36,b:3,c:1.0} },
+    normal: { outer:{a:0.37,b:0,c:0.3}, inner:{a:0.36,b:0,c:0.3}, pants:{a:0.59,b:4,c:0.3}, shoulder:{a:0.23,b:0,c:0.3}, chest:{a:0.50,b:0,c:0.3}, waist:{a:0.38,b:3,c:1.0} },
+    heavy:  { outer:{a:0.38,b:0,c:0.3}, inner:{a:0.37,b:0,c:0.3}, pants:{a:0.60,b:4,c:0.3}, shoulder:{a:0.24,b:0,c:0.3}, chest:{a:0.52,b:0,c:0.3}, waist:{a:0.40,b:3,c:1.0} },
+    obese:  { outer:{a:0.39,b:0,c:0.3}, inner:{a:0.38,b:0,c:0.3}, pants:{a:0.61,b:4,c:0.3}, shoulder:{a:0.25,b:0,c:0.3}, chest:{a:0.54,b:0,c:0.3}, waist:{a:0.42,b:3,c:1.0} },
   },
 };
 const FIT_OFF = { clean:0, oversize:3 };
 /* BMI benchmark per body type */
-const BODY_BMI_CENTER = { thin:18, normal:22, heavy:26, obese:30 };
+const BODY_BMI_CENTER = { thin:17, normal:21, heavy:26, obese:29 };
 const PROP = {
-  '4-6': { il:-1.5, ol:-1.5, pl:+2.5, sw:-0.3, ch:-0.5 },
-  '5-5': { il:0,    ol:0,    pl:0,    sw:0,    ch:0    },
-  '6-4': { il:+2.5, ol:+2.5, pl:-1.5, sw:+0.4, ch:+0.5 },
+  '4-6': { il:-1.5, ol:-1.5, pl:+2.5, sw:-0.3, ch:-0.5, wa:-1.5 },
+  '5-5': { il:0,    ol:0,    pl:0,    sw:0,    ch:0,    wa:0    },
+  '6-4': { il:+2.5, ol:+2.5, pl:-1.5, sw:+0.4, ch:+0.5, wa:+1.5 },
 };
-const SZ = {
-  male:   [[163,55,'XS'],[168,63,'S'],[173,72,'M'],[178,82,'L'],[183,92,'XL'],[Infinity,Infinity,'XXL']],
-  female: [[153,44,'XS'],[158,52,'S'],[163,60,'M'],[168,68,'L'],[173,78,'XL'],[Infinity,Infinity,'XXL']],
+// 尺码参考点（身高cm, 体重kg）：二维最近邻匹配
+const SZ_REF = {
+  male:   [[160,52,'XS'],[165,58,'S'],[170,66,'M'],[175,76,'L'],[180,86,'XL'],[190,96,'XXL']],
+  female: [[148,36,'XS'],[155,42,'S'],[163,50,'M'],[170,60,'L'],[177,70,'XL'],[185,80,'XXL']],
 };
 
 function getSize(h, w, g, bt) {
-  const rows = SZ[g] || SZ.male;
-  let s = 'M';
-  for (const [mh, mw, l] of rows) { if (h < mh || (h === mh && w < mw)) { s = l; break; } }
+  const ref = SZ_REF[g] || SZ_REF.male;
+  let best = 'M', minD = Infinity;
+  for (const [rh, rw, l] of ref) {
+    const dh = (h - rh) / 5;   // 归一化：每5cm身高 = 1档
+    const dw = (w - rw) / 10;  // 归一化：每10kg体重 = 1档
+    const d = dh*dh + dw*dw;   // 欧氏距离平方
+    if (d < minD) { minD = d; best = l; }
+  }
   const ss = ['XS','S','M','L','XL','XXL'];
-  if (bt === 'thin')  s = ss[Math.max(ss.indexOf(s)-1, 0)];
-  if (bt === 'obese') s = ss[Math.min(ss.indexOf(s)+1, 5)];
-  return s;
+  let idx = ss.indexOf(best);
+  // 体型基准偏移（偏瘦/肥胖各一档）
+  if (bt === 'thin')  idx = Math.max(idx - 1, 0);
+  if (bt === 'obese') idx = Math.min(idx + 1, 5);
+  // BMI偏差修正（所有体型均适用，基于各体型的BMI基准）
+  const bmi = w / ((h/100) ** 2);
+  const center = BODY_BMI_CENTER[bt] || 22;
+  const gap = bmi - center;
+  if (gap >= 7)       idx = Math.min(idx + 2, 5);
+  else if (gap >= 3)  idx = Math.min(idx + 1, 5);
+  else if (gap <= -3) idx = Math.max(idx - 1, 0);
+  return ss[idx];
 }
 
 function calc() {
@@ -771,20 +798,21 @@ function calc() {
   if (!h || !w) return null;
   const bmi = w / ((h/100) ** 2);
   const baseBmi = BODY_BMI_CENTER[bodyType] || 22;
-  const bmiDiff = bmi - baseBmi;
+  const bmiDiff = bmi - baseBmi; // 允许负值：偏瘦时缩小尺寸
   const t = (TBL[gender] && TBL[gender][bodyType]) || TBL.male.normal;
   let il = t.inner.a   * h + t.inner.b + t.inner.c * bmiDiff;
   let ol = t.outer.a   * h + t.outer.b + t.outer.c * bmiDiff;
   let pl = t.pants.a   * h + t.pants.b + t.pants.c * bmiDiff;
   let sw = t.shoulder.a * h + t.shoulder.b + t.shoulder.c * bmiDiff;
   let ch = t.chest.a   * h + t.chest.b + t.chest.c * bmiDiff;
+  let wa = t.waist.a   * h + t.waist.b + t.waist.c * bmiDiff;
   const fo = FIT_OFF[fit] || 0;
   il += fo; ol += fo;
   const pa = PROP[proportion] || PROP['5-5'];
-  il += pa.il; ol += pa.ol; pl += pa.pl; sw += pa.sw; ch += pa.ch;
+  il += pa.il; ol += pa.ol; pl += pa.pl; sw += pa.sw; ch += pa.ch; wa += pa.wa;
   if (customMode) {
-    const cfFields = ['shoulder', 'inner', 'outer', 'pants', 'chest'];
-    const f = { shoulder:sw, inner:il, outer:ol, pants:pl, chest:ch };
+    const cfFields = ['shoulder', 'inner', 'outer', 'pants', 'chest', 'waist'];
+    const f = { shoulder:sw, inner:il, outer:ol, pants:pl, chest:ch, waist:wa };
     const scales = [];
     const filled = {};
     cfFields.forEach(k => {
@@ -797,13 +825,14 @@ function calc() {
     if (scales.length > 0) {
       const avgSc = scales.reduce((a, b) => a + b, 0) / scales.length;
       const d = 1 + (avgSc - 1) * 0.55;
-      il *= d; ol *= d; pl *= d; sw *= d; ch *= d;
+      il *= d; ol *= d; pl *= d; sw *= d; ch *= d; wa *= d;
       Object.keys(filled).forEach(k => {
         if (k === 'shoulder') sw = filled[k];
         else if (k === 'inner') il = filled[k];
         else if (k === 'outer') ol = filled[k];
         else if (k === 'pants') pl = filled[k];
         else if (k === 'chest') ch = filled[k];
+        else if (k === 'waist') wa = filled[k];
       });
     }
   }
@@ -811,8 +840,11 @@ function calc() {
     inner:   Math.round(il),
     outer:   Math.round(ol),
     pants:   Math.round(pl),
+    pantsFit: Math.round(pl - 1),
+    pantsDrag: Math.round(pl + 4),
     shoulder:Math.round(sw*10)/10,
     chest:   Math.round(ch),
+    waist:   Math.round(wa),
     size:    getSize(h, w, gender, bodyType),
   };
 }
@@ -823,11 +855,14 @@ function render() {
   document.getElementById('sizeChar').textContent = r.size;
   document.getElementById('mv-inner').innerHTML   = r.inner + '<span class="unit">cm</span>';
   document.getElementById('mv-outer').innerHTML   = r.outer + '<span class="unit">cm</span>';
-  document.getElementById('mv-pants').innerHTML   = r.pants + '<span class="unit">cm</span>';
+  document.getElementById('mv-pants').innerHTML = 
+    (fit === 'clean' ? r.pantsFit : r.pantsDrag) + '<span class="unit">cm</span>';
+  document.getElementById('pantsDetail').textContent = 
+    fit === 'clean' ? '合身脚踝以下' : '拖地有堆积感';
   document.getElementById('mv-shoulder').innerHTML = r.shoulder + '<span class="unit">cm</span>';
   document.getElementById('mv-chest').innerHTML     = r.chest + '<span class="unit">cm</span>';
   document.getElementById('badgeFit').textContent   = fit==='clean' ? 'Clean Fit（合身）' : 'Oversize（宽松）';
-  document.getElementById('badgeFit').className   = 'badge' + (fit==='clean' ? ' on' : '');
+  document.getElementById('badgeFit').className   = 'badge on';
   document.getElementById('badgeProp').textContent = { '4-6':'4:6 身材','5-5':'5:5 身材','6-4':'6:4 身材' }[proportion];
   document.getElementById('badgeGender').textContent = gender==='male' ? '男款' : '女款';
   document.getElementById('badgeGender').className  = 'badge';
@@ -841,11 +876,12 @@ function restrictBody() {
   const bmi = w / ((h / 100) ** 2);
   const btnThin  = document.querySelector('[data-t="thin"]');
   const btnObese = document.querySelector('[data-t="obese"]');
-  if (btnThin)  btnThin.disabled  = bmi >= 28; // 明显肥胖不显示偏瘦
-  if (btnObese) btnObese.disabled = bmi < 20;  // 明显偏瘦不显示肥胖
-  // 当前选项被禁用时自动回退到"标准"
-  if (bodyType === 'thin' && bmi >= 28) setBodyActive('normal');
-  if (bodyType === 'obese' && bmi < 20) setBodyActive('normal');
+  // 根据国标 BMI 分类禁用不合理选项
+  if (btnThin)  btnThin.disabled  = bmi >= 24; // ≥24 已超重，不适合选偏瘦
+  if (btnObese) btnObese.disabled = bmi < 24;  // <24 未超重，不适合选肥胖
+  // 当前选项被禁用时自动切回"标准"
+  if (bodyType === 'thin' && btnThin.disabled) setBodyActive('normal');
+  if (bodyType === 'obese' && btnObese.disabled) setBodyActive('normal');
 }
 
 function setBodyActive(t) {
