@@ -644,6 +644,8 @@
       <button class="pill-btn" data-t="heavy" onclick="setBody(this)">健壮</button>
       <button class="pill-btn" data-t="obese" onclick="setBody(this)">肥胖</button>
     </div>
+    <div id="bodyTypeHint" style="display:none;margin-top:10px;padding:10px 14px;background:#FFF7E6;border:1px solid #FFB84D;border-radius:8px;font-size:12px;color:#8B5A00;line-height:1.5;transition:opacity 0.3s ease;">
+    </div>
   </div>
 
   <!-- FIT STYLE -->
@@ -659,9 +661,9 @@
   <div class="controls">
     <div class="ctrl-label">身材比例</div>
     <div class="pill-row" id="propPill">
-      <button class="pill-btn active" data-p="4-6" onclick="setProp(this)">4:6 上身短</button>
-      <button class="pill-btn" data-p="5-5" onclick="setProp(this)">5:5 等分</button>
-      <button class="pill-btn" data-p="6-4" onclick="setProp(this)">6:4 上身长</button>
+      <button class="pill-btn active" data-p="5-5" onclick="setProp(this)">5:5 标准</button>
+      <button class="pill-btn" data-p="4.5-5.5" onclick="setProp(this)">4.5:5.5 偏长腿</button>
+      <button class="pill-btn" data-p="5.5-4.5" onclick="setProp(this)">5.5:4.5 偏短腿</button>
     </div>
   </div>
 
@@ -736,7 +738,7 @@
 let gender = 'male';
 let bodyType = 'normal';
 let fit = 'clean';
-let proportion = '4-6';
+let proportion = '5-5';
 let customMode = false;
 
 /* ── Formula table (H×a+b, from reference image) ── */
@@ -744,8 +746,8 @@ const TBL = {
   male: {
     thin:   { outer:{a:0.38,b:0,c:0.3}, inner:{a:0.37,b:0,c:0.3}, pants:{a:0.54,b:6,c:0.3}, shoulder:{a:0.24,b:0,c:0.3}, chest:{a:0.52,b:0,c:0.3}, waist:{a:0.41,b:5,c:1.0} },
     normal: { outer:{a:0.39,b:0,c:0.3}, inner:{a:0.38,b:0,c:0.3}, pants:{a:0.55,b:6,c:0.3}, shoulder:{a:0.25,b:0,c:0.3}, chest:{a:0.54,b:0,c:0.3}, waist:{a:0.43,b:5,c:1.0} },
-    heavy:  { outer:{a:0.40,b:0,c:0.3}, inner:{a:0.39,b:0,c:0.3}, pants:{a:0.56,b:6,c:0.3}, shoulder:{a:0.26,b:0,c:0.3}, chest:{a:0.56,b:0,c:0.3}, waist:{a:0.45,b:5,c:1.0} },
-    obese:  { outer:{a:0.41,b:0,c:0.3}, inner:{a:0.40,b:0,c:0.3}, pants:{a:0.57,b:6,c:0.3}, shoulder:{a:0.27,b:0,c:0.3}, chest:{a:0.58,b:0,c:0.3}, waist:{a:0.47,b:5,c:1.0} },
+    heavy:  { outer:{a:0.40,b:0,c:0.3}, inner:{a:0.39,b:0,c:0.3}, pants:{a:0.55,b:6,c:0.3}, shoulder:{a:0.26,b:0,c:0.3}, chest:{a:0.56,b:0,c:0.3}, waist:{a:0.45,b:5,c:1.0} },
+    obese:  { outer:{a:0.41,b:0,c:0.3}, inner:{a:0.40,b:0,c:0.3}, pants:{a:0.55,b:6,c:0.3}, shoulder:{a:0.27,b:0,c:0.3}, chest:{a:0.58,b:0,c:0.3}, waist:{a:0.47,b:5,c:1.0} },
   },
   female: {
     thin:   { outer:{a:0.36,b:0,c:0.3}, inner:{a:0.35,b:0,c:0.3}, pants:{a:0.58,b:4,c:0.3}, shoulder:{a:0.22,b:0,c:0.3}, chest:{a:0.48,b:0,c:0.3}, waist:{a:0.36,b:3,c:1.0} },
@@ -758,9 +760,9 @@ const FIT_OFF = { clean:0, oversize:3 };
 /* BMI benchmark per body type */
 const BODY_BMI_CENTER = { thin:17, normal:21, heavy:26, obese:29 };
 const PROP = {
-  '4-6': { il:-1.5, ol:-1.5, pl:+2.5, sw:-0.3, ch:-0.5, wa:-1.5 },
-  '5-5': { il:0,    ol:0,    pl:0,    sw:0,    ch:0,    wa:0    },
-  '6-4': { il:+2.5, ol:+2.5, pl:-1.5, sw:+0.4, ch:+0.5, wa:+1.5 },
+  '4.5-5.5': { il:-1.0, ol:-1.0, pl:+1.0, sw:-0.2, ch:-0.2, wa:-1.0 },
+  '5-5':     { il:0,    ol:0,    pl:0,    sw:0,    ch:0,    wa:0    },
+  '5.5-4.5': { il:+1.0, ol:+1.0, pl:-1.0, sw:+0.2, ch:+0.2, wa:+1.0 },
 };
 // 尺码参考点（身高cm, 体重kg）：二维最近邻匹配
 const SZ_REF = {
@@ -773,7 +775,7 @@ function getSize(h, w, g, bt) {
   let best = 'M', minD = Infinity;
   for (const [rh, rw, l] of ref) {
     const dh = (h - rh) / 5;   // 归一化：每5cm身高 = 1档
-    const dw = (w - rw) / 10;  // 归一化：每10kg体重 = 1档
+    const dw = (w - rw) / (g === 'female' ? 10 : 12);  // 归一化：男每12kg/女每10kg = 1档
     const d = dh*dh + dw*dw;   // 欧氏距离平方
     if (d < minD) { minD = d; best = l; }
   }
@@ -782,13 +784,21 @@ function getSize(h, w, g, bt) {
   // 体型基准偏移（偏瘦/肥胖各一档）
   if (bt === 'thin')  idx = Math.max(idx - 1, 0);
   if (bt === 'obese') idx = Math.min(idx + 1, 5);
-  // BMI偏差修正（所有体型均适用，基于各体型的BMI基准）
+  // BMI偏差修正（仅当用户体型与BMI大致匹配时才生效，避免反向覆盖用户的主观选择）
   const bmi = w / ((h/100) ** 2);
   const center = BODY_BMI_CENTER[bt] || 22;
   const gap = bmi - center;
-  if (gap >= 7)       idx = Math.min(idx + 2, 5);
-  else if (gap >= 3)  idx = Math.min(idx + 1, 5);
-  else if (gap <= -3) idx = Math.max(idx - 1, 0);
+  // 体型与BMI不匹配检测
+  const mismatch = (bt === 'thin' && gap > 3) ||
+                   (bt === 'heavy' && gap < -3) ||
+                   (bt === 'obese' && gap < -3);
+  if (!mismatch) {
+    if (gap >= 7)       idx = Math.min(idx + 2, 5);
+    else if (gap >= 3)  idx = Math.min(idx + 1, 5);
+    else if (gap <= -3) idx = Math.max(idx - 1, 0);
+  }
+  // 矮+胖保护：身高<170 且 BMI 偏高时，额外升一档（避免矮胖用户被低估）
+  if (h < 170 && gap >= 3) idx = Math.min(idx + 1, 5);
   return ss[idx];
 }
 
@@ -810,6 +820,11 @@ function calc() {
   il += fo; ol += fo;
   const pa = PROP[proportion] || PROP['5-5'];
   il += pa.il; ol += pa.ol; pl += pa.pl; sw += pa.sw; ch += pa.ch; wa += pa.wa;
+  // 肥胖体型额外补偿：胸围+8cm、腰围+12cm（c=0.3/1.0 不足以反映肥胖对胸腰的影响）
+  if (bodyType === 'obese') {
+    ch += 8;
+    wa += 12;
+  }
   if (customMode) {
     const cfFields = ['shoulder', 'inner', 'outer', 'pants', 'chest', 'waist'];
     const f = { shoulder:sw, inner:il, outer:ol, pants:pl, chest:ch, waist:wa };
@@ -841,7 +856,7 @@ function calc() {
     outer:   Math.round(ol),
     pants:   Math.round(pl),
     pantsFit: Math.round(pl - 1),
-    pantsDrag: Math.round(pl + 4),
+    pantsDrag: Math.round(pl + (gender === 'female' ? 2 : 3)),
     shoulder:Math.round(sw*10)/10,
     chest:   Math.round(ch),
     waist:   Math.round(wa),
@@ -850,6 +865,8 @@ function calc() {
 }
 
 function render() {
+  const h = parseFloat(document.getElementById('height').value) || 170;
+  const w = parseFloat(document.getElementById('weight').value) || 65;
   const r = calc();
   if (!r) return;
   document.getElementById('sizeChar').textContent = r.size;
@@ -863,10 +880,38 @@ function render() {
   document.getElementById('mv-chest').innerHTML     = r.chest + '<span class="unit">cm</span>';
   document.getElementById('badgeFit').textContent   = fit==='clean' ? 'Clean Fit（合身）' : 'Oversize（宽松）';
   document.getElementById('badgeFit').className   = 'badge on';
-  document.getElementById('badgeProp').textContent = { '4-6':'4:6 身材','5-5':'5:5 身材','6-4':'6:4 身材' }[proportion];
+  document.getElementById('badgeProp').textContent = { '4.5-5.5':'4.5:5.5 身材','5-5':'5:5 身材','5.5-4.5':'5.5:4.5 身材' }[proportion];
   document.getElementById('badgeGender').textContent = gender==='male' ? '男款' : '女款';
   document.getElementById('badgeGender').className  = 'badge';
+  // 体型与BMI不匹配提示
+  showBodyTypeHint(h, w);
   restrictBody();
+}
+
+function showBodyTypeHint(h, w) {
+  const hint = document.getElementById('bodyTypeHint');
+  if (!h || !w) { hint.style.display = 'none'; return; }
+  const bmi = w / ((h / 100) ** 2);
+  const btZh = { thin: '偏瘦', normal: '标准', heavy: '健壮', obese: '肥胖' }[bodyType];
+  // 推荐体型（按 BMI 实际值反推）
+  let recommended;
+  if (bmi < 20)      recommended = 'thin';
+  else if (bmi < 24) recommended = 'normal';
+  else if (bmi < 28) recommended = 'heavy';
+  else               recommended = 'obese';
+  // 判断是否不匹配（用 bodyType 而不是 btZh）
+  const mismatch = (bodyType === 'thin'  && bmi > 24) ||
+                   (bodyType === 'heavy' && bmi < 23) ||
+                   (bodyType === 'obese' && bmi < 25);
+  if (mismatch && bodyType !== recommended) {
+    hint.innerHTML = `⚠️ 你的 BMI=${bmi.toFixed(1)}，「${btZh}」与实际体型不符。<br>建议改选「<b>${ {thin:'偏瘦', normal:'标准', heavy:'健壮', obese:'肥胖'}[recommended] }</b>」体型，结果会更准。`;
+    hint.style.display = 'block';
+    // 3 秒后自动消失
+    clearTimeout(hint._timer);
+    hint._timer = setTimeout(() => { hint.style.display = 'none'; }, 3000);
+  } else {
+    hint.style.display = 'none';
+  }
 }
 
 function restrictBody() {
@@ -876,19 +921,15 @@ function restrictBody() {
   const bmi = w / ((h / 100) ** 2);
   const btnThin  = document.querySelector('[data-t="thin"]');
   const btnObese = document.querySelector('[data-t="obese"]');
-  // 根据国标 BMI 分类禁用不合理选项
-  if (btnThin)  btnThin.disabled  = bmi >= 24; // ≥24 已超重，不适合选偏瘦
-  if (btnObese) btnObese.disabled = bmi < 24;  // <24 未超重，不适合选肥胖
-  // 当前选项被禁用时自动切回"标准"
-  if (bodyType === 'thin' && btnThin.disabled) setBodyActive('normal');
-  if (bodyType === 'obese' && btnObese.disabled) setBodyActive('normal');
-}
-
-function setBodyActive(t) {
-  bodyType = t;
+  // 根据 BMI 禁用不合理选项
+  if (btnThin)  btnThin.disabled  = (bmi >= 24);
+  if (btnObese) btnObese.disabled = (bmi < 25);
+  // 当前选项被禁用时，自动切回"标准"（但不重置其他按钮的 disabled）
+  if (bodyType === 'thin'  && btnThin  && btnThin.disabled)  bodyType = 'normal';
+  if (bodyType === 'obese' && btnObese && btnObese.disabled) bodyType = 'normal';
+  // 同步按钮高亮
   document.querySelectorAll('[data-t]').forEach(b => {
-    b.classList.toggle('active', b.dataset.t === t);
-    b.disabled = false;
+    b.classList.toggle('active', b.dataset.t === bodyType);
   });
 }
 
