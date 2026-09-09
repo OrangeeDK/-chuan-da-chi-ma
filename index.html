@@ -771,6 +771,10 @@ const SZ_REF = {
 };
 
 function getSize(h, w, g, bt) {
+  // 标准体型 + BMI≥25：实际是健壮身材，按健壮档计算（避免升档过头）
+  if (bt === 'normal' && w / ((h/100) ** 2) >= 25) {
+    bt = 'heavy';
+  }
   const ref = SZ_REF[g] || SZ_REF.male;
   let best = 'M', minD = Infinity;
   for (const [rh, rw, l] of ref) {
