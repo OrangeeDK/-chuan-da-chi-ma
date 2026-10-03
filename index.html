@@ -355,6 +355,11 @@
     padding: 0 10px 0 0; font-size: 11px; color: var(--text-dim);
     font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em;
   }
+  .field-box.invalid { border-color: #B45309; }
+  .input-hint {
+    margin-top: 10px; font-size: 12px; line-height: 1.5;
+    color: #8B5A00;
+  }
 
   /* Range slider */
   .slider-row {
@@ -509,7 +514,7 @@
       <div style="position:absolute;inset:0;border-radius:50%;border:5px solid #FF9500;background:#EBEBEB;"></div>
       <div class="size-inner" style="position:relative;z-index:1;width:100%;height:100%;">
         <div id="sizeChar" style="font-size:32px;font-weight:200;color:#1A1A1A;letter-spacing:-0.5px;line-height:1;">M</div>
-        <div style="font-size:10px;font-weight:400;color:#888888;text-transform:uppercase;letter-spacing:0.15em;margin-top:4px;">参考尺码</div>
+        <div id="sizeLabel" style="font-size:10px;font-weight:400;color:#888888;text-transform:uppercase;letter-spacing:0.15em;margin-top:4px;">参考尺码</div>
       </div>
     </div>
     <div class="track-info">
@@ -522,6 +527,8 @@
       </div>
     </div>
   </div>
+
+  <p id="sizeDataHint" class="input-hint" style="padding:0 var(--space-lg) var(--space-md);" role="status" aria-live="polite" hidden></p>
 
   <!-- MEASUREMENTS LIST -->
   <div class="measurements">
@@ -611,16 +618,16 @@
     <div class="ctrl-label">身体数据</div>
     <div class="input-row">
       <div class="field">
-        <label>身高</label>
+        <label for="height">身高</label>
         <div class="field-box">
-          <input type="number" id="height" value="170" min="130" max="220" oninput="syncHeightSlider();render()">
+          <input type="number" id="height" value="170" min="130" max="220" aria-describedby="bodyDataHint" required oninput="syncHeightSlider();render()">
           <span class="unit">cm</span>
         </div>
       </div>
       <div class="field">
-        <label>体重</label>
+        <label for="weight">体重</label>
         <div class="field-box">
-          <input type="number" id="weight" value="65" min="30" max="160" oninput="syncWeightSlider();render()">
+          <input type="number" id="weight" value="65" min="30" max="160" aria-describedby="bodyDataHint" required oninput="syncWeightSlider();render()">
           <span class="unit">kg</span>
         </div>
       </div>
@@ -633,6 +640,7 @@
         <input type="range" id="weightSlider" min="30" max="160" value="65" oninput="onWeightSlider(this.value)">
       </div>
     </div>
+    <p id="bodyDataHint" class="input-hint" role="status" aria-live="polite" hidden></p>
   </div>
 
   <!-- BODY TYPE -->
@@ -676,7 +684,7 @@
     </label>
   </div>
   <div id="customPanel" class="custom-panel">
-    <div class="custom-hint">填入实测数据，系统自动反推其他尺寸（可填多项）</div>
+    <div class="custom-hint">肩宽、胸围、腰围填身体实测值；胸腰围量身体一圈，不是衣服尺寸或平铺宽。衣长、裤长填衣物长度。身体实测值优先用于对应的上装／下装选码。</div>
     <div class="custom-input-row">
       <div class="custom-field">
         <label>肩宽</label>
@@ -711,14 +719,14 @@
     </div>
     <div class="custom-input-row">
       <div class="custom-field">
-        <label>胸围</label>
+        <label for="cf-chest">身体胸围</label>
         <div class="custom-input">
           <input type="number" id="cf-chest" placeholder="—" step="0.1" oninput="render()">
           <span class="unit">cm</span>
         </div>
       </div>
       <div class="custom-field">
-        <label>腰围</label>
+        <label for="cf-waist">身体腰围</label>
         <div class="custom-input">
           <input type="number" id="cf-waist" placeholder="—" step="0.1" oninput="render()">
           <span class="unit">cm</span>
@@ -771,10 +779,6 @@ const SZ_REF = {
 };
 
 function getSize(h, w, g, bt) {
-  // 标准体型 + BMI≥25：实际是健壮身材，按健壮档计算（避免升档过头）
-  if (bt === 'normal' && w / ((h/100) ** 2) >= 25) {
-    bt = 'heavy';
-  }
   const ref = SZ_REF[g] || SZ_REF.male;
   let best = 'M', minD = Infinity;
   for (const [rh, rw, l] of ref) {
@@ -788,28 +792,89 @@ function getSize(h, w, g, bt) {
   // 体型基准偏移（偏瘦/肥胖各一档）
   if (bt === 'thin')  idx = Math.max(idx - 1, 0);
   if (bt === 'obese') idx = Math.min(idx + 1, 5);
-  // BMI偏差修正（仅当用户体型与BMI大致匹配时才生效，避免反向覆盖用户的主观选择）
+  // 使用界面最终选定体型的固定基准；升档规则随体重递增，不能突然取消。
   const bmi = w / ((h/100) ** 2);
   const center = BODY_BMI_CENTER[bt] || 22;
   const gap = bmi - center;
-  // 体型与BMI不匹配检测
-  const mismatch = (bt === 'thin' && gap > 3) ||
-                   (bt === 'heavy' && gap < -3) ||
-                   (bt === 'obese' && gap < -3);
-  if (!mismatch) {
-    if (gap >= 7)       idx = Math.min(idx + 2, 5);
-    else if (gap >= 3)  idx = Math.min(idx + 1, 5);
-    else if (gap <= -3) idx = Math.max(idx - 1, 0);
-  }
-  // 矮+胖保护：身高<170 且 BMI 偏高时，额外升一档（避免矮胖用户被低估）
-  if (h < 170 && gap >= 3) idx = Math.min(idx + 1, 5);
+  if (gap >= 7)       idx = Math.min(idx + 2, 5);
+  else if (gap >= 3)  idx = Math.min(idx + 1, 5);
+  else if (gap <= -3 && (bt === 'normal' || bt === 'thin')) idx = Math.max(idx - 1, 0);
+  // 矮+胖保护用固定BMI阈值，避免自动切换体型时额外升档突然消失。
+  if (h < 170 && bmi >= 24) idx = Math.min(idx + 1, 5);
   return ss[idx];
 }
 
-function calc() {
-  const h = parseFloat(document.getElementById('height').value) || 170;
-  const w = parseFloat(document.getElementById('weight').value) || 65;
-  if (!h || !w) return null;
+function getMeasuredSize(value, g, dimension) {
+  if (!Number.isFinite(value) || value <= 0) return { size:'—', outside:true, invalid:true };
+  // 沿用当前模型的标准体型参考点，统一字母尺码与身体尺寸的口径。
+  // 这是经验参照，不是品牌表；范围外不能硬套最小或最大尺码。
+  const group = TBL[g] ? g : 'male';
+  const coefficients = TBL[group].normal[dimension];
+  const refs = SZ_REF[group].map(([h, w, size]) => ({
+    size,
+    value: coefficients.a * h + coefficients.b + coefficients.c *
+      (w / ((h / 100) ** 2) - BODY_BMI_CENTER.normal)
+  }));
+  const low = refs[0].value - (refs[1].value - refs[0].value) / 2;
+  const last = refs.length - 1;
+  const high = refs[last].value + (refs[last].value - refs[last - 1].value) / 2;
+  if (!Number.isFinite(value) || value < low || value > high) {
+    return { size: '—', outside: true };
+  }
+  const best = refs.reduce((a, b) => Math.abs(value - a.value) <= Math.abs(value - b.value) ? a : b);
+  return { size: best.size, outside: false };
+}
+
+function getMeasuredSizeInfo(measured, estimated, g) {
+  const upperKey = 'chest' in measured ? 'chest' : ('shoulder' in measured ? 'shoulder' : null);
+  const upper = upperKey ? getMeasuredSize(measured[upperKey], g, upperKey) : null;
+  const lower = 'waist' in measured ? getMeasuredSize(measured.waist, g, 'waist') : null;
+  if (!upper && !lower) return null;
+  const names = { chest:'身体胸围', shoulder:'身体肩宽', waist:'身体腰围' };
+  const notes = [];
+  if (upper) notes.push(`上装：${upper.invalid ? '实测值需为有效正数' : upper.outside ? '超出经验参考范围，需对照商品表' : upper.size}（按实测${names[upperKey]}）`);
+  if (lower) notes.push(`下装：${lower.invalid ? '实测值需为有效正数' : lower.outside ? '超出经验参考范围，需对照商品表' : lower.size}（按实测身体腰围）`);
+  // 15%只触发辅助核对提示，不判定身材不合理，也不覆盖用户实测值。
+  ['chest', 'waist'].forEach(k => {
+    if (measured[k] && Math.abs(measured[k] - estimated[k]) / estimated[k] > 0.15) {
+      notes.push(`实测${names[k]}与身高体重估算差异较大，请核对是否量了身体一圈。确认测量无误后，以实测为准`);
+    }
+  });
+  notes.push('实测选码沿用当前经验参照，具体品牌、版型请以商品尺码表为准');
+  return { size:(upper || lower).size, label:upper ? '上装参考' : '下装参考', note:notes.join('；') };
+}
+
+function readBodyData() {
+  const heightInput = document.getElementById('height');
+  const weightInput = document.getElementById('weight');
+  const h = heightInput.valueAsNumber;
+  const w = weightInput.valueAsNumber;
+  const heightValid = Number.isFinite(h) && h >= Number(heightInput.min) && h <= Number(heightInput.max);
+  const weightValid = Number.isFinite(w) && w >= Number(weightInput.min) && w <= Number(weightInput.max);
+  return { h, w, heightValid, weightValid, valid: heightValid && weightValid };
+}
+
+function showBodyDataValidity(data) {
+  const messages = [];
+  ['height', 'weight'].forEach(id => {
+    const input = document.getElementById(id);
+    const valid = data[id + 'Valid'];
+    input.setAttribute('aria-invalid', String(!valid));
+    input.closest('.field-box').classList.toggle('invalid', !valid);
+    if (!valid) {
+      messages.push(id === 'height'
+        ? `请填写 ${input.min}–${input.max} cm 的身高`
+        : `请填写 ${input.min}–${input.max} kg 的体重`);
+    }
+  });
+  const hint = document.getElementById('bodyDataHint');
+  hint.textContent = messages.join('；');
+  hint.hidden = data.valid;
+}
+
+function calc(data = readBodyData()) {
+  if (!data.valid) return null;
+  const { h, w } = data;
   const bmi = w / ((h/100) ** 2);
   const baseBmi = BODY_BMI_CENTER[bodyType] || 22;
   const bmiDiff = bmi - baseBmi; // 允许负值：偏瘦时缩小尺寸
@@ -829,32 +894,38 @@ function calc() {
     ch += 8;
     wa += 12;
   }
+  const estimated = { chest:ch, waist:wa };
+  const measured = {};
   if (customMode) {
     const cfFields = ['shoulder', 'inner', 'outer', 'pants', 'chest', 'waist'];
     const f = { shoulder:sw, inner:il, outer:ol, pants:pl, chest:ch, waist:wa };
     const scales = [];
     const filled = {};
     cfFields.forEach(k => {
-      const v = parseFloat(document.getElementById('cf-' + k).value);
-      if (v > 0) {
+      const input = document.getElementById('cf-' + k);
+      const v = input.valueAsNumber;
+      if (input.value !== '' && ['chest', 'waist', 'shoulder'].includes(k)) measured[k] = v;
+      if (Number.isFinite(v) && v > 0) {
         filled[k] = v;
-        if (f[k] > 0) scales.push(v / f[k]);
+        // 身体围度不用于拉长衣长、裤长；这两项实测仅修正对应围度和选码。
+        if (k !== 'chest' && k !== 'waist' && f[k] > 0) scales.push(v / f[k]);
       }
     });
     if (scales.length > 0) {
       const avgSc = scales.reduce((a, b) => a + b, 0) / scales.length;
       const d = 1 + (avgSc - 1) * 0.55;
       il *= d; ol *= d; pl *= d; sw *= d; ch *= d; wa *= d;
-      Object.keys(filled).forEach(k => {
-        if (k === 'shoulder') sw = filled[k];
-        else if (k === 'inner') il = filled[k];
-        else if (k === 'outer') ol = filled[k];
-        else if (k === 'pants') pl = filled[k];
-        else if (k === 'chest') ch = filled[k];
-        else if (k === 'waist') wa = filled[k];
-      });
     }
+    Object.keys(filled).forEach(k => {
+      if (k === 'shoulder') sw = measured.shoulder = filled[k];
+      else if (k === 'inner') il = filled[k];
+      else if (k === 'outer') ol = filled[k];
+      else if (k === 'pants') pl = filled[k];
+      else if (k === 'chest') ch = measured.chest = filled[k];
+      else if (k === 'waist') wa = measured.waist = filled[k];
+    });
   }
+  const measuredSize = getMeasuredSizeInfo(measured, estimated, gender);
   return {
     inner:   Math.round(il),
     outer:   Math.round(ol),
@@ -864,32 +935,50 @@ function calc() {
     shoulder:Math.round(sw*10)/10,
     chest:   Math.round(ch),
     waist:   Math.round(wa),
-    size:    getSize(h, w, gender, bodyType),
+    size:    measuredSize ? measuredSize.size : getSize(h, w, gender, bodyType),
+    sizeLabel: measuredSize ? measuredSize.label : '参考尺码',
+    sizeNote: measuredSize ? measuredSize.note : '',
   };
 }
 
 function render() {
-  const h = parseFloat(document.getElementById('height').value) || 170;
-  const w = parseFloat(document.getElementById('weight').value) || 65;
-  const r = calc();
-  if (!r) return;
-  document.getElementById('sizeChar').textContent = r.size;
-  document.getElementById('mv-inner').innerHTML   = r.inner + '<span class="unit">cm</span>';
-  document.getElementById('mv-outer').innerHTML   = r.outer + '<span class="unit">cm</span>';
-  document.getElementById('mv-pants').innerHTML = 
-    (fit === 'clean' ? r.pantsFit : r.pantsDrag) + '<span class="unit">cm</span>';
-  document.getElementById('pantsDetail').textContent = 
-    fit === 'clean' ? '合身脚踝以下' : '拖地有堆积感';
-  document.getElementById('mv-shoulder').innerHTML = r.shoulder + '<span class="unit">cm</span>';
-  document.getElementById('mv-chest').innerHTML     = r.chest + '<span class="unit">cm</span>';
-  document.getElementById('badgeFit').textContent   = fit==='clean' ? 'Clean Fit（合身）' : 'Oversize（宽松）';
+  const data = readBodyData();
+  showBodyDataValidity(data);
+  document.getElementById('badgeFit').textContent = fit==='clean' ? 'Clean Fit（合身）' : 'Oversize（宽松）';
   document.getElementById('badgeFit').className   = 'badge on';
   document.getElementById('badgeProp').textContent = { '4.5-5.5':'4.5:5.5 身材','5-5':'5:5 身材','5.5-4.5':'5.5:4.5 身材' }[proportion];
   document.getElementById('badgeGender').textContent = gender==='male' ? '男款' : '女款';
   document.getElementById('badgeGender').className  = 'badge';
+  document.getElementById('pantsDetail').textContent =
+    fit === 'clean' ? '合身脚踝以下' : '拖地有堆积感';
+  if (!data.valid) {
+    document.getElementById('sizeChar').textContent = '—';
+    document.getElementById('sizeLabel').textContent = '参考尺码';
+    document.getElementById('sizeDataHint').hidden = true;
+    ['inner', 'outer', 'pants', 'shoulder', 'chest'].forEach(k => {
+      document.getElementById('mv-' + k).innerHTML = '—<span class="unit">cm</span>';
+    });
+    const hint = document.getElementById('bodyTypeHint');
+    clearTimeout(hint._timer);
+    hint.style.display = 'none';
+    return;
+  }
+  // 先更新体型限制，再按最终选中的体型计算，避免结果滞后一轮。
+  restrictBody(data.h, data.w);
+  const r = calc(data);
+  if (!r) return;
+  document.getElementById('sizeChar').textContent = r.size;
+  document.getElementById('sizeLabel').textContent = r.sizeLabel;
+  document.getElementById('sizeDataHint').textContent = r.sizeNote;
+  document.getElementById('sizeDataHint').hidden = !r.sizeNote;
+  document.getElementById('mv-inner').innerHTML   = r.inner + '<span class="unit">cm</span>';
+  document.getElementById('mv-outer').innerHTML   = r.outer + '<span class="unit">cm</span>';
+  document.getElementById('mv-pants').innerHTML = 
+    (fit === 'clean' ? r.pantsFit : r.pantsDrag) + '<span class="unit">cm</span>';
+  document.getElementById('mv-shoulder').innerHTML = r.shoulder + '<span class="unit">cm</span>';
+  document.getElementById('mv-chest').innerHTML     = r.chest + '<span class="unit">cm</span>';
   // 体型与BMI不匹配提示
-  showBodyTypeHint(h, w);
-  restrictBody();
+  showBodyTypeHint(data.h, data.w);
 }
 
 function showBodyTypeHint(h, w) {
@@ -918,10 +1007,7 @@ function showBodyTypeHint(h, w) {
   }
 }
 
-function restrictBody() {
-  const h = parseFloat(document.getElementById('height').value) || 170;
-  const w = parseFloat(document.getElementById('weight').value) || 65;
-  if (!h || !w) return;
+function restrictBody(h, w) {
   const bmi = w / ((h / 100) ** 2);
   const btnThin  = document.querySelector('[data-t="thin"]');
   const btnObese = document.querySelector('[data-t="obese"]');
@@ -946,12 +1032,12 @@ function onWeightSlider(v) {
   render();
 }
 function syncHeightSlider() {
-  const v = document.getElementById('height').value;
-  document.getElementById('heightSlider').value = v;
+  const data = readBodyData();
+  if (data.heightValid) document.getElementById('heightSlider').value = data.h;
 }
 function syncWeightSlider() {
-  const v = document.getElementById('weight').value;
-  document.getElementById('weightSlider').value = v;
+  const data = readBodyData();
+  if (data.weightValid) document.getElementById('weightSlider').value = data.w;
 }
 
 function setGender(btn) {
@@ -983,5 +1069,6 @@ function toggleCustom(on) {
 
 render();
 </script>
+<script src="product-size.js"></script>
 </body>
 </html>
