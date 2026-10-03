@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!requirements.txt
+!index.html
+!product-size.js
+!server.py
+!cloud_app.py

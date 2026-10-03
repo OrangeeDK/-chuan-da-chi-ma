@@ -4,6 +4,8 @@
 
 👉 **在线体验**：https://orangeedk.github.io/-chuan-da-chi-ma/
 
+👉 **部署完整截图识别版本到 Render**：[按步骤配置](RENDER部署.md)。仓库已包含 Docker 部署文件；GitHub Pages 地址仍为静态预览，Render 网站地址需完成部署后填写。
+
 ## 功能
 
 - 上传商品尺码表截图，在页面上方显示商品推荐码数；支持上装与裤装

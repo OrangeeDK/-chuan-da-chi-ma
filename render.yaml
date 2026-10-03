@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: clothing-size-helper
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /health
