@@ -44,18 +44,19 @@
   onProgress('正在识别尺码表……');const scale=Math.min(736/Math.min(canvas.width,canvas.height),2400/Math.max(canvas.width,canvas.height)),w=Math.max(32,Math.round(canvas.width*scale/32)*32),h=Math.max(32,Math.round(canvas.height*scale/32)*32);
   const detection=await det.run({[det.inputNames[0]]:tensor(resized(canvas,w,h))}),out=detection[det.outputNames[0]],boxes=regions(out.data,out.dims[3],out.dims[2],canvas),words=[];
   for(let n=0;n<boxes.length;n++){
-   const box=boxes[n],cw=Math.max(1,Math.ceil(48*box.width/box.height)),padded=Math.max(320,cw),result=await rec.run({[rec.inputNames[0]]:tensor(resized(canvas,cw,48,box),padded)}),pred=result[rec.outputNames[0]],classes=pred.dims[2];let text='',previous=-1,total=0,count=0;
+   const box=boxes[n],cw=Math.max(1,Math.ceil(48*box.width/box.height)),padded=Math.max(32,Math.ceil(cw/32)*32),result=await rec.run({[rec.inputNames[0]]:tensor(resized(canvas,cw,48,box),padded)}),pred=result[rec.outputNames[0]],classes=pred.dims[2];let text='',previous=-1,total=0,count=0;
    for(let t=0;t<pred.dims[1];t++){let best=0;for(let c=1;c<classes;c++)if(pred.data[t*classes+c]>pred.data[t*classes+best])best=c;if(best&&best!==previous){text+=chars[best]||'';total+=pred.data[t*classes+best];count++;}previous=best;}
    if(text.trim()&&total/count>.5)words.push({...box,text:text.trim()});onProgress('正在识别尺码表 '+Math.round((n+1)/boxes.length*100)+'%……');await new Promise(resolve=>setTimeout(resolve,0));
   }return {text:linesFromWords(words),words,engine:'browser'};
  }
  if(inWorker&&typeof root.importScripts==='function'){
-  root.onmessage=async e=>{const bitmap=e.data.bitmap;try{const canvas=resized(bitmap,bitmap.width,bitmap.height);bitmap.close();const result=await recognize(canvas,message=>root.postMessage({progress:message}));root.postMessage({result});}catch(e){console.error('OCR',e);root.postMessage({error:'识别未完成，请检查网络或裁剪到清晰的尺码表后重试。'});}};
+  root.onmessage=async e=>{if(e.data.prepare){if(!ready)ready=initialize().catch(()=>{ready=null;});return;}const bitmap=e.data.bitmap;try{if(ready)await ready;if(!ready)ready=initialize().catch(e=>{ready=null;throw e;});const canvas=resized(bitmap,bitmap.width,bitmap.height);bitmap.close();const result=await recognize(canvas,message=>root.postMessage({progress:message}));root.postMessage({result});}catch(e){console.error('OCR',e);root.postMessage({error:'识别未完成，请检查网络或裁剪到清晰的尺码表后重试。'});}};
  }else{
   let worker;
+  function prepare(){if(!root.Worker||!root.OffscreenCanvas||!root.createImageBitmap)return;if(!worker)worker=new Worker(new URL('browser-ocr.js?v=2',document.baseURI));worker.postMessage({prepare:true});}
   async function recognizeInWorker(canvas,onProgress=()=>{}){
    if(!root.Worker||!root.OffscreenCanvas||!root.createImageBitmap)return recognize(canvas,onProgress);
-   if(!worker)worker=new Worker(new URL('browser-ocr.js',document.baseURI));
+   if(!worker)worker=new Worker(new URL('browser-ocr.js?v=2',document.baseURI));
    const bitmap=await createImageBitmap(canvas);
    return new Promise((resolve,reject)=>{
     const timeout=setTimeout(()=>{worker.terminate();worker=null;reject(new Error('识别超时，请检查网络或裁剪到尺码表后重试。'));},180000);
@@ -63,6 +64,6 @@
     worker.onerror=()=>{clearTimeout(timeout);worker.terminate();worker=null;reject(new Error('浏览器识别暂时失败，请重新上传；也可裁剪到尺码表后重试。'));};worker.postMessage({bitmap},[bitmap]);
    });
   }
-  const api={recognize:recognizeInWorker,linesFromWords};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.BrowserSizeOCR=api;
+  const api={recognize:recognizeInWorker,prepare,linesFromWords};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.BrowserSizeOCR=api;
  }
 })(globalThis);

@@ -177,6 +177,7 @@
     try{await action();}catch(e){status(e.name==='TimeoutError'?'识别超时，请稍后重试。':e.message||'读取失败，请重试。');}
     finally{busy=false;$('productImage').disabled=false;section.querySelector('.product-upload').setAttribute('aria-disabled','false');$('productImage').value='';}
   }
+  section.querySelector('.product-upload').addEventListener('pointerdown',()=>{if(window.BrowserSizeOCR&&BrowserSizeOCR.prepare)BrowserSizeOCR.prepare();});
   $('productImage').onchange=()=>{
     const file=$('productImage').files[0];if(!file)return;
     return importing(async()=>{
