@@ -66,8 +66,18 @@
     const mode = /适合.*(?:胸围|腰围)|身体(?:胸围|腰围)/.test(text) ? 'body'
       : /胸宽|腰宽|半胸围|半腰围|单面宽度/.test(text) ? 'flat'
       : /成衣|衣服.*围/.test(text) || (/胸围|腰围/.test(text) && /衣长|裤长|袖长/.test(text)) ? 'garment' : '';
-    const unit = /英寸|inch/i.test(text) ? 'inch' : /厘米|cm/i.test(text) ? 'cm' : '';
-    return {category,mode,unit};
+    let unit = /英寸|inch/i.test(text) ? 'inch' : /厘米|cm/i.test(text) ? 'cm' : '';
+    let unitInferred=false;
+    if(!unit&&['garment','flat'].includes(mode)){
+      const ranges={length:category==='pants'?[60,140]:[35,150],shoulder:[25,80],sleeve:[20,110]};
+      try{
+        const rows=parseChart(text,category);
+        const girth=mode==='flat'?(category==='pants'?[25,90]:[35,110]):(category==='pants'?[50,180]:[70,220]);
+        const fields=Object.keys(ranges).filter(key=>rows.every(r=>Number.isFinite(r[key])));
+        if(rows.length>=2&&fields.some(key=>key==='length'||key==='sleeve')&&rows.every(r=>r.low>=girth[0]&&r.high<=girth[1]&&fields.every(key=>r[key]>=ranges[key][0]&&r[key]<=ranges[key][1]))){unit='cm';unitInferred=true;}
+      }catch{}
+    }
+    return {category,mode,unit,unitInferred,easeMin:category==='pants'?2:8,easeMax:category==='pants'?6:14};
   }
   function matchProduct(rows, body, mode, minEase, maxEase, context={}) {
     if (!Number.isFinite(body) || body <= 0) throw new Error('身体围度需要为正数。');
@@ -146,14 +156,6 @@
     document.querySelector('.track-sub').textContent='身体数据与偏好 → 通用尺码参考';generalRender();
   };
   render=function(){generalRender();if(product)recommend(false);else if(productActive)header('—',NaN,'top');};
-  async function post(path,data){
-    if(location.protocol==='file:')throw new Error('请运行“启动商品尺码预览.cmd”启用识别服务。');
-    const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(path==='/api/product-link'?90000:60000)});
-    if(response.status===501||response.status===404)throw new Error((location.hostname||'').endsWith('github.io')?'当前在线版本暂未启用截图识别，请下载本地版本并运行“启动商品尺码预览.cmd”。':'请运行“启动商品尺码预览.cmd”启用识别服务。');
-    let result;try{result=await response.json();}catch{throw new Error('识别服务暂时不可用，请重新启动预览。');}
-    if(!response.ok)throw new Error(result.error||'读取失败，请换一张清晰截图重试。');
-    return result;
-  }
   function accept(data,source){
     if(!data.text)throw new Error('未读到商品尺码表，请上传商品详情中的尺码表截图。');
     const meta=data.metadata;
@@ -183,7 +185,7 @@
       const ratio=Math.min(1,2400/Math.max(image.naturalWidth,image.naturalHeight));
       const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
       const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);
-      status('正在识别截图……');accept(await post('/api/ocr',{image:canvas.toDataURL('image/png').split(',')[1]}),'商品尺码表截图');
+      const data=await BrowserSizeOCR.recognize(canvas,status);data.metadata=chartMetadata(data.text);accept(data,'商品尺码表截图');
     });
   };
   function recommend(scroll){
