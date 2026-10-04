@@ -12,6 +12,11 @@ from server import ROOT, recognize_image
 OCR_SLOT = threading.BoundedSemaphore(1)
 ASSETS = {'/': 'index.html', '/index.html': 'index.html', '/product-size.js': 'product-size.js', '/browser-ocr.js': 'browser-ocr.js'}
 ASSETS['/assets/orange-watercolor.png'] = 'assets/orange-watercolor.png'
+ASSETS['/assets/orange-cartoon-a.png'] = 'assets/orange-cartoon-a.png'
+ASSETS.update({'/' + name: name for name in ('glass-layout.js', 'glass-theme.css', 'dark-theme.css')})
+ASSETS.update({'/' + p.relative_to(ROOT).as_posix(): p.relative_to(ROOT).as_posix()
+               for p in (ROOT / 'assets').rglob('*')
+               if p.is_file() and p.suffix in ('.png', '.ttf', '.txt')})
 ASSETS.update({'/vendor/onnx/' + p.name: 'vendor/onnx/' + p.name
                for p in (ROOT / 'vendor/onnx').glob('*')
                if p.is_file() and p.suffix in ('.js', '.mjs', '.wasm', '.onnx', '.json')})
@@ -30,7 +35,9 @@ def application(environ, start_response):
         suffix = Path(ASSETS[path]).suffix
         mime = {'.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
                 '.mjs': 'application/javascript; charset=utf-8', '.wasm': 'application/wasm',
-                '.json': 'application/json; charset=utf-8', '.png': 'image/png'}.get(suffix, 'application/octet-stream')
+                '.json': 'application/json; charset=utf-8', '.png': 'image/png',
+                '.css': 'text/css; charset=utf-8', '.ttf': 'font/ttf',
+                '.txt': 'text/plain; charset=utf-8'}.get(suffix, 'application/octet-stream')
         return respond('200 OK', (ROOT / ASSETS[path]).read_bytes(), mime)
     if method == 'GET' and path == '/health':
         return respond('200 OK', {'status': 'ok'})

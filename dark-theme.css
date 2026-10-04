@@ -1,0 +1,64 @@
+/* 深色潮流配色；尺寸、字体与交互继续沿用现有页面。 */
+:root{color-scheme:dark;--bg:#101214;--bg2:#1b1e21;--bg3:#24272a;--text:#f5f5f3;--text-dim:#b9bbbd;--text-hint:#a1a4a7;--border:#34373a;--accent:#ff941f;--toggle-off:#34373a;--glass-selected:linear-gradient(115deg,#ffb343,#ff851b)}
+html,body{background:#0b0d0f;color:var(--text)}
+.app{background:radial-gradient(ellipse 250px 245px at 100% 135px,#ffac2abf 0%,#f45c218c 35%,#a7292629 68%,transparent 100%),linear-gradient(160deg,#141719,#101214 40%);box-shadow:0 0 80px #0003}
+.nav-title,.glass-section-heading h2,.glass-intro h1{color:#f5f5f3}
+.glass-intro p{color:#c3c3c3}
+.glass-intro::before,.glass-intro::after{opacity:.13;border-color:#ffb96a;box-shadow:none}
+.player{border-color:#ffffff24;border-radius:24px;background:linear-gradient(135deg,#24272bba,#171a1ed9);box-shadow:inset 0 1px 0 #ffffff09,0 16px 36px #0002}
+.app #sizeChar,.app #sizeLabel{color:#f5f5f3!important}
+.track-sub{color:#b8b9ba}
+.badge{background:#ffffff0c;color:#c9c9c9;border:1px solid #ffffff0b}
+.badge.on{background:var(--glass-selected);color:#24180b;border-color:#ffa33e}
+.glass-garment:before{background:radial-gradient(circle,#d7792745,#d7792719 60%,transparent 74%)}
+.glass-garment img{filter:drop-shadow(0 8px 12px #0005);width:170px;height:180px;max-width:none}
+.glass-garment[data-category=pants] img{height:185px}
+.glass-section-heading>span{color:#a7a9ab}
+.seg,.pill-btn{background:linear-gradient(125deg,#24272a,#1b1e21);border-color:#34373a;box-shadow:inset 0 1px 0 #ffffff06}
+.seg-btn,.pill-btn{color:#dadbdc}
+.seg-btn.active,.pill-btn.active{background:var(--glass-selected);color:#21170c;border-color:#ffac48;outline:none;box-shadow:inset 0 1px 0 #ffc66e88,0 5px 18px #ff8a171c}
+.pill-btn:disabled,.seg-btn:disabled{background:#202326;color:#9ea1a4;box-shadow:none}
+.pill-btn.active:disabled,.seg-btn.active:disabled{background:#3a3328;color:#d3c4ac}
+.field{border-color:#34373a;background:linear-gradient(135deg,#24272be0,#191c20);border-radius:22px;box-shadow:inset 0 1px 0 #ffffff06}
+.field label,.glass-preferences .ctrl-label{color:#cbcccd}
+.field-box input{color:#f0f0ed}
+.field-box .unit{color:#b8babd}
+.slider-field input[type=range]{background:#44474b}
+.slider-field input[type=range]::-webkit-slider-thumb{background:linear-gradient(135deg,#ffb23f,#ff861c);border-color:#ffb145;box-shadow:0 2px 9px #ff941f40}
+.slider-field input[type=range]::-moz-range-thumb{background:#ff961e;border-color:#ffb145}
+.measurements{background:linear-gradient(140deg,#22262acc,#191c20c9);border-color:#34373a;border-radius:24px;box-shadow:inset 0 1px 0 #ffffff06}
+.measure-row{border-color:#35383b}
+.measure-icon{color:#d7d8d6}
+.measure-icon svg [stroke]{stroke:#d7d8d6}
+.measure-name{color:#eeeeeb}
+.measure-detail{color:#aaadb0}
+.measure-value,.pants-fit,.pants-drag{color:#f0f0ed}
+.measure-value .unit{color:#b9bbbd}
+.switch-row{border-color:#34373a}
+.switch-row .row-label{color:#c4c6c8}
+.ios-toggle-track{background:#34373a;box-shadow:inset 0 1px 3px #0005}
+.ios-toggle input:checked+.ios-toggle-track{background:#ff961e}
+.ios-toggle-track:before{background:#fafafa;box-shadow:0 2px 4px #0004}
+.custom-input{background:#202326;border-color:#3e4145;color:#f5f5f3}
+.custom-input input{color:#f5f5f3}
+.custom-hint,.custom-field label,.custom-input .unit{color:#b9bbbd}
+.app .product-module{color:#f5f5f3}
+.app .product-module .product-upload{background:linear-gradient(110deg,#ffb442,#ff8618);border-color:#ffb64f;color:#24180b;box-shadow:inset 0 1px 0 #ffd58488,0 7px 24px #ff861e20}
+.app .product-module #productStatus{color:#bfc1c3}
+.app .product-mode-note{color:#d2bc9d}
+.app .product-result{background:#22201d;border-color:#58402a;color:#e0d7cc;box-shadow:none}
+.app .product-back{background:#222529;border-color:#414449;color:#d9dbdc}
+.disclaimer{color:#a2a5a8}
+.input-hint{color:#ffbf7e}
+#bodyTypeHint{background:#30271e!important;border-color:#a9743c!important;color:#ffcd97!important}
+.app button:focus-visible,.app input:focus-visible,.app .product-module :focus-visible,.ios-toggle input:focus-visible+.ios-toggle-track{outline-color:#ffbb63}
+@media(hover:hover){.seg-btn:not(:disabled):not(.active):hover,.pill-btn:not(:disabled):not(.active):hover{background:#35393e}.app .product-module .product-upload:not([aria-disabled=true]):hover{background:linear-gradient(110deg,#ffbd56,#ff922c);box-shadow:0 8px 26px #ff861e30}}
+@media(max-width:360px){.glass-garment img{width:145px;height:160px}.glass-garment[data-category=pants] img{height:170px}}
+
+/* 图片的轻微透视摆动；保持服装正面与袖口可见。 */
+.glass-garment{perspective:650px}
+.glass-garment img{left:-14px;transform-origin:50% 50%;animation:jacket-turn 12s ease-in-out infinite;will-change:transform;backface-visibility:hidden;width:196px;height:207px}
+.glass-garment[data-category=pants] img{height:213px}
+@keyframes jacket-turn{0%,100%{transform:rotateY(-16deg) rotateZ(-1deg) translateY(0)}50%{transform:rotateY(16deg) rotateZ(1deg) translateY(-3px)}}
+@media(max-width:360px){.glass-garment img{width:167px;height:184px}.glass-garment[data-category=pants] img{height:196px}}
+@media(prefers-reduced-motion:reduce){.glass-garment img{animation:none;will-change:auto}}

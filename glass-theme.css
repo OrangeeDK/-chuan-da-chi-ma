@@ -1,0 +1,134 @@
+:root{--bg:#fffcf6;--bg2:#fffdf8;--bg3:#f7ecdd;--text:#242526;--text-dim:#78766f;--text-hint:#928d83;--border:#ebe5da;--accent:#ef942e;--toggle-off:#e9e3d9;--radius-sm:16px;--radius-md:24px;--radius-pill:999px;--glass-edge:rgba(255,255,255,.92);--glass-shadow:0 6px 22px rgba(168,119,56,.07);--glass-selected:linear-gradient(135deg,rgba(255,239,211,.97),rgba(255,213,154,.85))}
+html,body{background:#f6f2e9}
+body{}
+.app{max-width:540px;background:radial-gradient(ellipse 310px 270px at 90% 8%,#ffe6c7a6,transparent),linear-gradient(160deg,#fffdf9,#fffcf6 70%);padding:0 22px 42px;overflow:hidden}
+.app button,.app .ctrl-label,.app .badge,.app .measure-name,.app .field label{letter-spacing:0;}
+.nav{position:relative;padding:0;height:74px;background:transparent;border:0;gap:12px}
+.nav>div:first-child{position:static!important;width:auto!important;height:48px!important;gap:8px}
+.nav-logo{position:static!important;transform:none!important;width:32px;height:32px}
+.nav-logo img{width:38px!important;height:38px!important;transform:translate(-3px,-3px)}
+.nav-title{font-size:22px!important;letter-spacing:-.8px;}
+.nav-sub{font-size:12px;letter-spacing:0;color:#57554f}
+.glass-intro{padding:16px 2px 24px}
+.glass-intro h1{font-size:42px;line-height:1.13;letter-spacing:-1.8px;}
+.glass-intro em{color:var(--accent);font-style:normal}
+.glass-intro p{font-size:13px;margin-top:14px;line-height:1.6;color:#77726a}
+.player{display:grid;grid-template-columns:minmax(0,1fr) 128px;grid-template-rows:auto auto;align-items:start;gap:8px 6px;padding:24px 22px;border:1px solid #fff;border-radius:30px;background:linear-gradient(135deg,#ffffffcc,#fff3e080);box-shadow:0 0 0 1px #efe4d375,var(--glass-shadow);position:relative;overflow:hidden}
+.track-info{grid-column:1;grid-row:1;min-width:0}
+.track-sub{font-size:10px;line-height:1.5;color:#8b8173;letter-spacing:0;margin-top:7px}
+.badges{gap:4px;margin-top:8px}
+.badge{font-size:9px;padding:4px 7px;border:0;background:#efe8dcaa;color:#84725e}
+.badge.on{background:#ffead1bb;color:#965e25}
+#sizeLabel{font-size:13px!important;color:#67635c!important;letter-spacing:0!important;margin-top:0!important;line-height:1.5}
+.size-circle{grid-column:1;grid-row:2;width:auto!important;height:98px!important;border-radius:0;overflow:visible}
+.size-circle>div:first-child{display:none}
+.size-inner{align-items:flex-start;justify-content:center;width:100%!important;height:100%!important}
+.app #sizeChar{font-size:80px!important;letter-spacing:-5px!important;color:#222529!important;line-height:1!important}
+.glass-garment{grid-column:2;grid-row:1/span 2;width:128px;height:170px;align-self:center;display:flex;align-items:center;justify-content:center;position:relative;color:#947d5c}
+.glass-garment:before{content:'';position:absolute;width:144px;height:144px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#ffdfae9c,#ffe6c757 65%,transparent 73%)}
+.glass-garment svg{width:110px;height:130px;transform:rotate(-9deg);filter:drop-shadow(0 6px 5px #9c744b1c);z-index:1}
+.app .product-mode-note{margin:12px 4px 6px;color:#8d6d45;font-size:11px;line-height:1.7}
+.app .product-result{margin:12px 0 10px;padding:16px 18px;border:1px solid #eee2cf;border-left:0;border-radius:20px;background:#fff9ef;box-shadow:inset 0 1px 0 #fff;font-size:12px;color:#6d5941;line-height:1.8}
+.app .product-back{margin:0 0 10px;border:1px solid #e9dfd0;background:#fffdf9cc;border-radius:999px;color:#78654d;font-size:11px;padding:8px 14px}
+.glass-body,.glass-measure-section,.glass-preferences{margin-top:28px}
+.glass-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;padding:0 2px}
+.glass-section-heading h2{font-size:21px;letter-spacing:-.6px;}
+.glass-section-heading>span{font-size:10px;color:#989084}
+.controls{padding:0;border:0}
+.controls+.controls{margin-top:12px}
+.glass-body .seg{width:148px;flex-shrink:0}
+.seg{padding:4px;gap:2px;border:1px solid #ece2d3;border-radius:999px;background:linear-gradient(120deg,#fffdfac4,#f5ede07a);box-shadow:inset 0 1px 0 #fff;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.seg-btn,.pill-btn{font-size:12px;letter-spacing:0;border-radius:999px;background:transparent;color:#69665f;padding:10px 8px;transition:background .15s,box-shadow .15s}
+.seg-btn.active,.pill-btn.active{background:var(--glass-selected);color:#3a3022;box-shadow:inset 0 1px 0 #fff,0 0 0 1px #fff9,0 5px 12px #e9b06b20}
+.pill-row{gap:8px}
+.pill-btn{background:#fffefa80;border:1px solid #eee4d6;padding:11px 4px;box-shadow:inset 0 1px 0 #fff8}
+.pill-btn.active{border-color:#fff;outline:1px solid #f9d9ad}
+.pill-btn:disabled,.seg-btn:disabled{opacity:1;color:#aba295;background:#f6f1e8;box-shadow:none;cursor:not-allowed}
+.pill-btn.active:disabled,.seg-btn.active:disabled{background:#eae1d2;color:#8a7d6a}
+.input-row{gap:12px;margin-top:0}
+.field{border:1px solid #eee4d6;border-radius:24px;background:linear-gradient(140deg,#fffefbba,#fffbf27a);padding:14px;gap:8px;box-shadow:inset 0 1px 0 #fff}
+.field label{font-size:12px;color:#6c6860;}
+.field-box{border:0;background:none;border-radius:4px;box-shadow:none;gap:3px}
+.field-box input{padding:0;text-align:left;font-size:27px;letter-spacing:-.8px;width:100%;color:#252629}
+.field-box .unit{padding:0;font-size:12px;color:#777065;text-transform:none;letter-spacing:0}
+.field:focus-within{outline:2px solid #f2b770;outline-offset:2px}
+.field-box:focus-within{border:0}
+.field-box.invalid{outline:2px solid #b66a31;outline-offset:4px}
+.slider-field{margin-top:9px}
+.slider-field input[type=range]{height:4px;background:#e6dfd4;cursor:pointer}
+.slider-field input[type=range]::-webkit-slider-thumb{width:19px;height:19px;background:linear-gradient(135deg,#ffa443,#ee942e);border:1px solid #fff9;box-shadow:0 2px 4px #cd8b4233}
+.slider-field input[type=range]::-moz-range-thumb{width:18px;height:18px;background:#f39a36;border:1px solid #fff9;box-shadow:0 2px 4px #cd8b4233}
+.slider-field input[type=range]:focus-visible{outline:2px solid #ba7428;outline-offset:5px}
+.measurements{border:1px solid #eee5d8;border-radius:26px;background:#fffdf880;overflow:hidden;padding:0 14px;box-shadow:inset 0 1px 0 #fff}
+.measure-row{padding:14px 0;background:transparent;border-color:#ece4d8;gap:14px}
+.measure-icon{width:24px;height:28px;background:none;border-radius:0;box-shadow:none}
+.measure-icon svg{width:24px;height:24px}
+.measure-icon svg [stroke]{stroke:#777166;stroke-width:1.2}
+.measure-name{font-size:13px;letter-spacing:0;color:#454540}
+.measure-detail{font-size:9px;color:#a0988a;letter-spacing:0;margin-top:4px}
+.measure-value,.pants-fit,.pants-drag{font-size:18px;letter-spacing:-.4px;color:#353634}
+.measure-value .unit{font-size:11px;color:#7c766c;letter-spacing:0;margin-left:4px}
+.glass-preferences .ctrl-label{font-size:12px;color:#8c8274;margin:0 0 8px;letter-spacing:0;}
+.switch-row{padding:20px 2px;border-bottom:1px solid #eee4d6;margin-top:12px}
+.switch-row .row-label{font-size:12px;letter-spacing:0;color:#6d655b}
+.ios-toggle-track{background:#ece3d5;box-shadow:inset 0 1px 3px #9e876322}
+.ios-toggle input:checked+.ios-toggle-track{background:#f2aa50}
+.ios-toggle-track:before{box-shadow:0 2px 4px #9e876326;background:#fffefb}
+.custom-panel{padding:16px 0}
+.custom-hint{font-size:11px;line-height:1.7}
+.custom-input{background:#fffdf8;border-color:#e8dfd1}
+.custom-input input{font-size:14px}
+.custom-field label{font-size:11px;letter-spacing:0}
+.app .product-module{margin:28px 0 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#282923}
+.app .product-module h2{font-size:23px;letter-spacing:-.6px;margin:0 2px 14px}
+.app .product-module .product-upload{display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:18px 12px;border:1px solid #fffbf4;border-radius:999px;background:linear-gradient(125deg,#fff3ddcc,#ffe2b7c9 55%,#ffd0a184);color:#3f3527;font-size:15px;box-shadow:inset 0 2px 2px #fff,0 0 0 1px #f3d9b599,0 8px 22px #edbc7b29;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:box-shadow .15s}
+.glass-upload-icon{display:flex;width:22px;height:22px}
+.glass-upload-icon svg{width:100%;height:100%}
+.app .product-module .product-upload[aria-disabled=true]{opacity:.65;box-shadow:inset 0 1px 0 #fff;cursor:wait}
+.app .product-module #productStatus{font-size:11px;color:#8f795c;margin:12px 3px 0}
+.app .product-module :focus-visible,.seg-btn:focus-visible,.pill-btn:focus-visible,.product-back:focus-visible{outline:2px solid #a36322;outline-offset:4px}
+.ios-toggle input:focus-visible+.ios-toggle-track{outline:2px solid #a36322;outline-offset:4px}
+.disclaimer{padding:22px 6px 0;text-align:center;font-size:9px;color:#a2998a;letter-spacing:0}
+@media(hover:hover){.seg-btn:not(:disabled):hover,.pill-btn:not(:disabled):hover{background:#fff0d8}.app .product-module .product-upload:not([aria-disabled=true]):hover{box-shadow:inset 0 2px 2px #fff,0 0 0 1px #edc798,0 9px 26px #e4a9603b}}
+@media(max-width:360px){.app{padding-left:16px;padding-right:16px}.glass-intro h1{font-size:38px}.player{padding:20px 18px;grid-template-columns:minmax(0,1fr) 110px}.glass-garment{width:110px}.glass-body .seg{width:132px}.glass-section-heading h2{font-size:19px}.field{padding:12px}.field-box input{font-size:24px}.pill-row{gap:5px}.pill-btn{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.seg-btn,.pill-btn,.app .product-module .product-upload{transition:none}}
+
+/* 立体服装插画与品牌标题 */
+.nav-title{font-size:16px!important;letter-spacing:-.4px;white-space:nowrap}
+.glass-intro h1{letter-spacing:-1.5px;line-height:1.22}
+.glass-garment img{position:relative;z-index:1;width:150px;height:170px;object-fit:contain;filter:drop-shadow(0 6px 6px #b38a5e18)}
+@media(max-width:360px){.nav-title{font-size:14px!important}.glass-garment img{width:130px;height:155px}.glass-intro h1{font-size:36px}}
+
+/* 字体与字重沿用初始版本；只保留新布局所需字号。 */
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif}
+.glass-intro h1{font-family:'BiaoXiaoZhiWuJieHei',sans-serif;font-weight:200;font-synthesis:none}
+.nav-title{font-family:'BiaoXiaoZhiWuJieHei',sans-serif!important;font-weight:700}
+.app .seg-btn,.app .pill-btn,.app .ctrl-label,.app .badge,.app .measure-name,.app .field label{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
+.glass-section-heading h2{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
+.app #sizeChar{font-family:inherit;font-weight:200!important}
+.app #sizeLabel{font-family:inherit;font-weight:400}
+.app .field-box input{font-family:inherit;font-weight:300}
+.app .measure-value,.app .pants-fit,.app .pants-drag{font-family:inherit;font-weight:200}
+.app .measure-value .unit,.field-box .unit{font-weight:400}
+.app .product-module h2{font-family:inherit;font-weight:500}
+.app .product-module .product-upload,.app .product-back{font-family:inherit;font-weight:400}
+.app .custom-input input{font-family:inherit;font-weight:300}
+.app .custom-field label{font-family:inherit;font-weight:600}
+
+.nav-title{font-size:18px!important;letter-spacing:.03em;font-synthesis:none}
+@media(max-width:360px){.nav-title{font-size:16px!important}}
+
+/* 轻淡玻璃弧纹与稍宽的标题字距 */
+.glass-intro{position:relative;isolation:isolate}
+.glass-intro h1{letter-spacing:1px}
+.glass-intro::before,.glass-intro::after{content:'';position:absolute;z-index:-1;pointer-events:none;right:-90px;top:8px;width:225px;height:128px;border-radius:50%;transform:rotate(-27deg);border-top:2px solid #fff9;box-shadow:inset 0 14px 15px #fff4,0 -2px 12px #f0d3ae22}
+.glass-intro::after{right:-110px;top:62px;width:245px;height:132px;opacity:.75}
+.glass-garment[data-category=pants] img{height:180px}
+.measure-icon{color:#56564f}
+.measure-icon svg{width:25px;height:27px;flex-shrink:0}
+
+/* 主要选项与小标题放大约 20%，沿用现有字体和字重。 */
+#bodyPill .pill-btn,#fitSeg .seg-btn,#propPill .pill-btn,
+.glass-preferences .ctrl-label,.glass-body .field label{font-size:14.4px}
+@media(max-width:360px){#bodyPill .pill-btn,#propPill .pill-btn{font-size:13.2px}}
+@media(max-width:360px){#propPill .pill-btn{white-space:normal;line-height:1.5;min-height:58px}}

@@ -136,6 +136,7 @@
     $('customMode').disabled=productActive;
   }
   function header(size,body,category){
+    window.dispatchEvent(new CustomEvent('product-category-change',{detail:{category}}));
     $('sizeChar').textContent=size; $('sizeLabel').textContent='商品推荐'; $('sizeDataHint').hidden=true;
     $('badgeFit').textContent='商品尺码表'; $('badgeProp').textContent='体型：'+({thin:'偏瘦',normal:'标准',heavy:'健壮',obese:'肥胖'}[bodyType]||'标准'); $('badgeGender').textContent=(gender==='female'?'女款':'男款')+'·'+(category==='pants'?'裤装':'上装');
     ['inner','outer','pants','shoulder','chest'].forEach(k=>{$('mv-'+k).innerHTML='—<span class="unit">cm</span>';});
