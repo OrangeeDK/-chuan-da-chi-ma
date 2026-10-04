@@ -84,7 +84,9 @@
     if (!['garment','flat','body'].includes(mode)) throw new Error('先确认尺码表的测量含义。');
     if (mode !== 'body' && (!Number.isFinite(minEase) || !Number.isFinite(maxEase) || minEase < 0 || maxEase < minEase)) throw new Error('请检查余量范围：最大值不能小于最小值，且不能为负数。');
     const boxy=context.category!=='pants'&&rows.filter(r=>Number.isFinite(r.length)&&r.length/(r.low*(mode==='flat'?2:1))<.62).length>=Math.ceil(rows.length/2);
-    const preferredEase=boxy?body*.22:(minEase+maxEase)/2;
+    const relaxed=context.fit==='oversize';
+    // 宽松上装增加约 8 cm 胸围目标余量；裤装只增加 2 cm 腰围余量。
+    const preferredEase=(boxy?body*.22:(minEase+maxEase)/2)+(relaxed?(context.category==='pants'?2:8):0);
     const candidates = rows.map(r => {
       if (mode !== 'body' && r.low !== r.high) throw new Error('成衣尺寸出现区间，请先确认对应款式的单一尺寸；弹性范围暂不自动选码。');
       const circumference = r.low * (mode === 'flat' ? 2 : 1);
@@ -94,7 +96,7 @@
       let distance = mode === 'body' ? Math.abs((r.low + r.high) / 2 - body) : Math.abs(ease-preferredEase)/10;
       let weights=1;
       if(mode!=='body'&&Number.isFinite(r.shoulder)&&Number.isFinite(context.shoulder)){
-        distance+=.45*Math.abs(r.shoulder-context.shoulder-(boxy?4:1.5))/6;weights+=.45;
+        distance+=.45*Math.abs(r.shoulder-context.shoulder-(boxy?4:1.5)-(relaxed?2:0))/6;weights+=.45;
         if(r.shoulder<context.shoulder)distance+=(context.shoulder-r.shoulder)/3;
       }
       if(mode!=='body'&&Number.isFinite(r.length)&&Number.isFinite(context.height)){
@@ -105,7 +107,7 @@
       return {...r, circumference, ease, eligible, distance};
     });
     const ranked=candidates.filter(r => r.eligible).sort((a,b) => a.distance - b.distance);
-    return {candidates,best:ranked[0]||null,alternative:ranked[1]||null,boxy};
+    return {candidates,best:ranked[0]||null,alternative:ranked[1]||null,boxy,preferredEase};
   }
   if (typeof module !== 'undefined' && module.exports) { module.exports = {parseChart, matchProduct,chartMetadata}; return; }
 
@@ -128,18 +130,19 @@
   const output = document.createElement('div'); output.id='productResult'; output.className='product-result'; output.hidden=true;
   output.setAttribute('role','status'); output.setAttribute('aria-live','polite');
   const modeNote = document.createElement('p'); modeNote.className='product-mode-note'; modeNote.hidden=true;
-  modeNote.textContent='当前按商品尺码表推荐；可调整男款/女款及体型，版型效果选项不参与。';
+  modeNote.textContent='当前按商品尺码表推荐；可调整男款/女款、体型及版型偏好。';
   const back = document.createElement('button'); back.type='button'; back.className='product-back'; back.textContent='返回通用推荐'; back.hidden=true;
   $('sizeDataHint').after(modeNote,output,back);
   function status(text){$('productStatus').textContent=text;$('productStatus').hidden=!text;}
   function lockOptions(){
-    document.querySelectorAll('[data-f],[data-p]').forEach(btn=>{btn.disabled=productActive;});
+    document.querySelectorAll('[data-p]').forEach(btn=>{btn.disabled=productActive;});
+    document.querySelectorAll('[data-f]').forEach(btn=>{btn.disabled=false;});
     $('customMode').disabled=productActive;
   }
   function header(size,body,category){
     window.dispatchEvent(new CustomEvent('product-category-change',{detail:{category}}));
     $('sizeChar').textContent=size; $('sizeLabel').textContent='商品推荐'; $('sizeDataHint').hidden=true;
-    $('badgeFit').textContent='商品尺码表'; $('badgeProp').textContent='体型：'+({thin:'偏瘦',normal:'标准',heavy:'健壮',obese:'肥胖'}[bodyType]||'标准'); $('badgeGender').textContent=(gender==='female'?'女款':'男款')+'·'+(category==='pants'?'裤装':'上装');
+    $('badgeFit').textContent=fit==='oversize'?'商品表·宽松':'商品表·合身'; $('badgeProp').textContent='体型：'+({thin:'偏瘦',normal:'标准',heavy:'健壮',obese:'肥胖'}[bodyType]||'标准'); $('badgeGender').textContent=(gender==='female'?'女款':'男款')+'·'+(category==='pants'?'裤装':'上装');
     ['inner','outer','pants','shoulder','chest'].forEach(k=>{$('mv-'+k).innerHTML='—<span class="unit">cm</span>';});
     if(category==='top'&&Number.isFinite(body))$('mv-chest').innerHTML=body.toFixed(1)+'<span class="unit">cm</span>';
     $('pantsDetail').textContent='商品未提供的尺寸不推算';
@@ -206,17 +209,17 @@
       if(measured)body=input.valueAsNumber;
       else{
         // 身高、体重与用户选择的体型共同估算，版型/比例效果不参与商品选码。
-        const t=TBL[group][inferredBody][dimension];
-        body=t.a*data.h+t.b+t.c*(bmi-BODY_BMI_CENTER[inferredBody]);
-        if(inferredBody==='obese')body+=dimension==='chest'?8:12;
+        body=estimateBodyCircumference(data.h,bmi,group,inferredBody,dimension);
       }
       if(!Number.isFinite(body)||body<=0)throw new Error('请检查身体'+label+'，需要有效的正数。');
       const model=TBL[group][inferredBody],delta=bmi-BODY_BMI_CENTER[inferredBody];
       const shoulderInput=$('cf-shoulder');
       const shoulder=$('customMode').checked&&shoulderInput.valueAsNumber>0?shoulderInput.valueAsNumber:model.shoulder.a*data.h+model.shoulder.b+model.shoulder.c*delta;
-      const lengthModel=meta.category==='pants'?model.pants:model.inner;
-      const length=lengthModel.a*data.h+lengthModel.b+lengthModel.c*delta;
-      const result=matchProduct(product.rows,body,meta.mode,meta.easeMin,meta.easeMax,{category:meta.category,height:data.h,shoulder,length});
+      // 同一身高、体重的裤长参考保持一致，体型差异由身体腰围表达。
+      const lengthModel=meta.category==='pants'?TBL[group].normal.pants:model.inner;
+      const lengthDelta=meta.category==='pants'?bmi-BODY_BMI_CENTER.normal:delta;
+      const length=lengthModel.a*data.h+lengthModel.b+lengthModel.c*lengthDelta;
+      const result=matchProduct(product.rows,body,meta.mode,meta.easeMin,meta.easeMax,{category:meta.category,height:data.h,shoulder,length,fit});
       activate();header(result.best?result.best.size:'—',body,meta.category);
       const basis=(measured?'实测':'估算')+label+' '+body.toFixed(1)+' cm';
       if(result.best){
@@ -230,6 +233,8 @@
         const comparison=best.size===generalSize?'与通用参考一致':'通用参考 '+generalSize+'（仅对照）';
         output.textContent=title+'\n'+basis+'，'+(meta.mode==='body'?'符合商家适用区间。':'该码余量 '+best.ease.toFixed(1)+' cm。')+'\n'+comparison;
         if(meta.unitInferred)output.textContent+=' · 单位按 cm 推断';
+        if(fit==='oversize'&&meta.mode==='body')output.textContent+='\n表中只有适用身体尺寸，宽松程度需向商家确认。';
+        else if(fit==='oversize'&&best.ease<result.preferredEase-2)output.textContent+='\n当前可选尺码余量有限，可能达不到预期宽松效果。';
         if(meta.mode!=='body'&&best.ease>Math.max(40,body*.45))output.textContent+='\n提醒：仍明显偏宽，建议核对实测。';
         if(meta.mode!=='body'&&best.ease<2)output.textContent+='\n提醒：余量很小，可能偏紧。';
       }else{

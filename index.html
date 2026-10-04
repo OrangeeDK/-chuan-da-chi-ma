@@ -858,6 +858,15 @@ function showBodyDataValidity(data) {
   hint.hidden = data.valid;
 }
 
+function estimateBodyCircumference(h, bmi, group, type, dimension) {
+  const model = TBL[group][type][dimension];
+  // 腰围使用共同 BMI 基准，避免不同体型的基准抵消甚至反转体型差异。
+  const center = dimension === 'waist' ? BODY_BMI_CENTER.normal : BODY_BMI_CENTER[type];
+  let value = model.a * h + model.b + model.c * (bmi - center);
+  if (type === 'obese') value += dimension === 'chest' ? 8 : 12;
+  return value;
+}
+
 function calc(data = readBodyData()) {
   if (!data.valid) return null;
   const { h, w } = data;
@@ -870,7 +879,7 @@ function calc(data = readBodyData()) {
   let pl = t.pants.a   * h + t.pants.b + t.pants.c * bmiDiff;
   let sw = t.shoulder.a * h + t.shoulder.b + t.shoulder.c * bmiDiff;
   let ch = t.chest.a   * h + t.chest.b + t.chest.c * bmiDiff;
-  let wa = t.waist.a   * h + t.waist.b + t.waist.c * bmiDiff;
+  let wa = estimateBodyCircumference(h, bmi, gender, bodyType, 'waist');
   const fo = FIT_OFF[fit] || 0;
   il += fo; ol += fo;
   const pa = PROP[proportion] || PROP['5-5'];
@@ -878,7 +887,6 @@ function calc(data = readBodyData()) {
   // 肥胖体型额外补偿：胸围+8cm、腰围+12cm（c=0.3/1.0 不足以反映肥胖对胸腰的影响）
   if (bodyType === 'obese') {
     ch += 8;
-    wa += 12;
   }
   const estimated = { chest:ch, waist:wa };
   const measured = {};
@@ -1056,7 +1064,7 @@ function toggleCustom(on) {
 render();
 </script>
 <script src="browser-ocr.js?v=20261004c"></script>
-<script src="product-size.js?v=glass6"></script>
+<script src="product-size.js?v=glass7"></script>
 <script src="glass-layout.js?v=8"></script>
 </body>
 </html>
