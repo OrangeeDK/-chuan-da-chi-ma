@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -c "from rapidocr_onnxruntime import RapidOCR; RapidOCR(intra_op_num_threads=2, inter_op_num_threads=2)"
 COPY index.html product-size.js browser-ocr.js server.py cloud_app.py ./
 COPY vendor/onnx ./vendor/onnx
+COPY assets ./assets
 RUN useradd --create-home appuser && chown -R appuser:appuser /app
 USER appuser
 EXPOSE 10000
