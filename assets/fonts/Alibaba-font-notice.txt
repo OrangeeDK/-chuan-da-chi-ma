@@ -1,0 +1,8 @@
+Alibaba PuHuiTi Heavy UI subset
+Source: https://github.com/chinayin/fonts-alibaba-puhuiti-heavy
+
+Copyright ?2019 Alibaba (China) Co., Ltd. All rights reserved.
+
+(c) 2019 阿里巴巴（中国）有限公司，版权所有
+
+Copyright © 2019 Alibaba (China) Co., Ltd. All rights reserved.

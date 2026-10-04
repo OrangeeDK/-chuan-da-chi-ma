@@ -119,6 +119,7 @@
     <h2 id="productTitle">导入商品</h2>
     <label for="productImage" class="product-upload">上传尺码表截图</label>
     <input id="productImage" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+    <div id="productProgress" class="product-progress" hidden><div class="product-progress-heading"><span id="productProgressLabel">正在准备图片……</span><span id="productProgressValue"></span></div><progress id="productProgressBar" max="100" aria-label="尺码表识别进度"></progress></div>
     <p id="productStatus" role="status" aria-live="polite" hidden></p>`;
   document.querySelector('.disclaimer').before(section);
   const style = document.createElement('style');
@@ -172,9 +173,10 @@
   }
   async function importing(action){
     if(busy)return;busy=true;clearProduct();
+    $('productProgress').hidden=false;$('productProgressLabel').textContent='正在准备图片……';$('productProgressValue').textContent='';$('productProgressBar').removeAttribute('value');
     $('productImage').disabled=true;
     section.querySelector('.product-upload').setAttribute('aria-disabled','true');
-    try{await action();}catch(e){status(e.name==='TimeoutError'?'识别超时，请稍后重试。':e.message||'读取失败，请重试。');}
+    try{await action();$('productProgressLabel').textContent='识别处理完成';$('productProgressValue').textContent='100%';$('productProgressBar').value=100;}catch(e){$('productProgress').hidden=true;status(e.name==='TimeoutError'?'识别超时，请稍后重试。':e.message||'读取失败，请重试。');}
     finally{busy=false;$('productImage').disabled=false;section.querySelector('.product-upload').setAttribute('aria-disabled','false');$('productImage').value='';}
   }
   section.querySelector('.product-upload').addEventListener('pointerdown',()=>{if(window.BrowserSizeOCR&&BrowserSizeOCR.prepare)BrowserSizeOCR.prepare();});
@@ -187,7 +189,7 @@
       const ratio=Math.min(1,2400/Math.max(image.naturalWidth,image.naturalHeight));
       const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*ratio));canvas.height=Math.max(1,Math.round(image.naturalHeight*ratio));
       const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);
-      const data=await BrowserSizeOCR.recognize(canvas,status);data.metadata=chartMetadata(data.text);accept(data,'商品尺码表截图');
+      const data=await BrowserSizeOCR.recognize(canvas,(message,detail)=>{status('');$('productProgressLabel').textContent=message.replace(/\s*\d+%……$/,'');const percent=detail&&detail.percent;$('productProgressValue').textContent=percent==null?'':percent+'%';if(percent==null)$('productProgressBar').removeAttribute('value');else $('productProgressBar').value=percent;});data.metadata=chartMetadata(data.text);accept(data,'商品尺码表截图');
     });
   };
   function recommend(scroll){

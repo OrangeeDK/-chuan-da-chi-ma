@@ -16,7 +16,7 @@ ASSETS['/assets/orange-cartoon-a.png'] = 'assets/orange-cartoon-a.png'
 ASSETS.update({'/' + name: name for name in ('glass-layout.js', 'glass-theme.css', 'dark-theme.css')})
 ASSETS.update({'/' + p.relative_to(ROOT).as_posix(): p.relative_to(ROOT).as_posix()
                for p in (ROOT / 'assets').rglob('*')
-               if p.is_file() and p.suffix in ('.png', '.webp', '.ttf', '.txt')})
+               if p.is_file() and p.suffix in ('.png', '.webp', '.ttf', '.woff2', '.txt')})
 ASSETS.update({'/vendor/onnx/' + p.name: 'vendor/onnx/' + p.name
                for p in (ROOT / 'vendor/onnx').glob('*')
                if p.is_file() and p.suffix in ('.js', '.mjs', '.wasm', '.onnx', '.json')})
@@ -36,7 +36,7 @@ def application(environ, start_response):
         mime = {'.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
                 '.mjs': 'application/javascript; charset=utf-8', '.wasm': 'application/wasm',
                 '.json': 'application/json; charset=utf-8', '.png': 'image/png',
-                '.webp': 'image/webp', '.css': 'text/css; charset=utf-8', '.ttf': 'font/ttf',
+                '.woff2': 'font/woff2', '.webp': 'image/webp', '.css': 'text/css; charset=utf-8', '.ttf': 'font/ttf',
                 '.txt': 'text/plain; charset=utf-8'}.get(suffix, 'application/octet-stream')
         return respond('200 OK', (ROOT / ASSETS[path]).read_bytes(), mime)
     if method == 'GET' and path == '/health':
