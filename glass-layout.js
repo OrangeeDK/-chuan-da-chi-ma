@@ -9,9 +9,9 @@
  info.prepend(document.getElementById('sizeLabel'));
  info.querySelector('.track-sub').textContent='身体数据与偏好 → 通用尺码参考';
  const illustration=document.createElement('div');illustration.className='glass-garment';illustration.setAttribute('aria-hidden','true');
- const garmentImage=document.createElement('img');garmentImage.alt='';garmentImage.width=150;garmentImage.height=170;illustration.append(garmentImage);
+ const garmentImage=document.createElement('img');garmentImage.alt='';garmentImage.width=150;garmentImage.height=170;garmentImage.fetchPriority='high';illustration.append(garmentImage);
  let garmentCategory='top';
- const updateGarment=()=>{const category=garmentCategory==='pants'?'pants':'jacket',key=category+'-unisex';if(garmentImage.dataset.kind!==key){garmentImage.dataset.kind=key;illustration.dataset.category=category;garmentImage.src='assets/'+key+'.png';}};
+ const updateGarment=()=>{const category=garmentCategory==='pants'?'pants':'jacket',key=category+'-unisex';if(garmentImage.dataset.kind!==key){garmentImage.dataset.kind=key;illustration.dataset.category=category;garmentImage.src='assets/'+key+'.webp';}};
  window.addEventListener('product-category-change',e=>{garmentCategory=e.detail.category;updateGarment();});
  document.querySelector('.product-back').addEventListener('click',()=>{garmentCategory='top';updateGarment();});
  updateGarment();new MutationObserver(updateGarment).observe(document.getElementById('badgeGender'),{childList:true,subtree:true,characterData:true});
