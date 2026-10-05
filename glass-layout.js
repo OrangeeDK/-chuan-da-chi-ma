@@ -44,7 +44,7 @@
  const preferences=document.createElement('section');preferences.className='glass-preferences';
  preferences.innerHTML='<div class="glass-section-heading"><h2>穿着偏好</h2></div>';
  const fit=document.getElementById('fitSeg').closest('.controls'),prop=document.getElementById('propPill').closest('.controls');
- fit.before(preferences);preferences.append(fit,prop);
+ measureSection.before(preferences);preferences.append(fit,prop);
  const upload=document.querySelector('.product-upload');
  const uploadIcon=document.createElement('span');uploadIcon.className='glass-upload-icon';uploadIcon.setAttribute('aria-hidden','true');uploadIcon.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M12 16V3M7 8L12 3L17 8M4 14V20H20V14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
  upload.prepend(uploadIcon);

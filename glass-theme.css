@@ -32,7 +32,7 @@ body{}
 .app .product-back{margin:0 0 10px;border:1px solid #e9dfd0;background:#fffdf9cc;border-radius:999px;color:#78654d;font-size:11px;padding:8px 14px}
 .glass-body,.glass-measure-section,.glass-preferences{margin-top:28px}
 .glass-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;padding:0 2px}
-.glass-section-heading h2{font-size:21px;letter-spacing:-.6px;}
+.glass-section-heading h2,.app .product-module h2{font-size:21px;letter-spacing:-.6px;line-height:1.4}
 .glass-section-heading>span{font-size:10px;color:#989084}
 .controls{padding:0;border:0}
 .controls+.controls{margin-top:12px}
@@ -80,7 +80,7 @@ body{}
 .custom-input input{font-size:14px}
 .custom-field label{font-size:11px;letter-spacing:0}
 .app .product-module{margin:28px 0 0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:#282923}
-.app .product-module h2{font-size:23px;letter-spacing:-.6px;margin:0 2px 14px}
+.app .product-module h2{margin:0 2px 14px}
 .app .product-module .product-upload{display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:18px 12px;border:1px solid #fffbf4;border-radius:999px;background:linear-gradient(125deg,#fff3ddcc,#ffe2b7c9 55%,#ffd0a184);color:#3f3527;font-size:15px;box-shadow:inset 0 2px 2px #fff,0 0 0 1px #f3d9b599,0 8px 22px #edbc7b29;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:box-shadow .15s}
 .glass-upload-icon{display:flex;width:22px;height:22px}
 .glass-upload-icon svg{width:100%;height:100%}
@@ -104,14 +104,14 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',
 .glass-intro h1{font-family:'BiaoXiaoZhiWuJieHei',sans-serif;font-weight:200;font-synthesis:none}
 .nav-title{font-family:'BiaoXiaoZhiWuJieHei',sans-serif!important;font-weight:700}
 .app .seg-btn,.app .pill-btn,.app .ctrl-label,.app .badge,.app .measure-name,.app .field label{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
-.glass-section-heading h2{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
+.glass-section-heading h2,.app .product-module h2{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
 .app #sizeChar{font-family:inherit;font-weight:200!important}
 .app #sizeLabel{font-family:inherit;font-weight:400}
 .app .field-box input{font-family:inherit;font-weight:300}
 .app .measure-value,.app .pants-fit,.app .pants-drag{font-family:inherit;font-weight:200}
 .app .measure-value .unit,.field-box .unit{font-weight:400}
-.app .product-module h2{font-family:inherit;font-weight:500}
-.app .product-module .product-upload,.app .product-back{font-family:inherit;font-weight:400}
+.app .product-module .product-upload{font-family:'AlibabaPuHuiTi-Heavy',sans-serif;font-weight:600}
+.app .product-back{font-family:inherit;font-weight:400}
 .app .custom-input input{font-family:inherit;font-weight:300}
 .app .custom-field label{font-family:inherit;font-weight:600}
 
@@ -132,3 +132,4 @@ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',
 .glass-preferences .ctrl-label,.glass-body .field label{font-size:14.4px}
 @media(max-width:360px){#bodyPill .pill-btn,#propPill .pill-btn{font-size:13.2px}}
 @media(max-width:360px){#propPill .pill-btn{white-space:normal;line-height:1.5;min-height:58px}}
+@media(max-width:360px){.app .product-module h2{font-size:19px}}
